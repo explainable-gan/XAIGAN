@@ -14,6 +14,7 @@ Authors:
 
 import numpy as np
 import torch
+import shap
 from src.utils.vector_utils import vectors_to_images
 
 
@@ -43,6 +44,8 @@ def explanation_hook(module, grad_input, grad_output):
     :param grad_output: the gradients from the output layer
     :return:
     """
+    temp = get_values()
+    new_grad = grad
     temp = torch.from_numpy(get_values())
     new_grad = grad_output[0] * temp
     return new_grad,

@@ -1,14 +1,15 @@
 from torch.utils.data import ConcatDataset, DataLoader, sampler
 from torchvision import transforms, datasets
-data_folder = "./data"
+data_folder = "./src/data"
 
 
 def fminst_data():
     """ Get MNIST data """
-    compose = transforms.Compose(
-        [transforms.ToTensor(),
-         transforms.Normalize([.5, ], [.5, ])
-         ])
+    compose = transforms.Compose([
+        transforms.Resize(64),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5))
+        ])
     out_dir = data_folder
     train_data = datasets.FashionMNIST(root=out_dir, train=True, transform=compose, download=True)
     test_data = datasets.FashionMNIST(root=out_dir, train=False, transform=compose, download=True)
@@ -17,10 +18,11 @@ def fminst_data():
 
 def mnist_data():
     """ Get MNIST data """
-    compose = transforms.Compose(
-        [transforms.ToTensor(),
-         transforms.Normalize([.5, ], [.5, ])
-         ])
+    compose = transforms.Compose([
+        transforms.Resize(64),
+        transforms.ToTensor(),
+        transforms.Normalize([.5, ], [.5, ])
+        ])
     out_dir = data_folder
     train_data = datasets.MNIST(root=out_dir, train=True, transform=compose, download=True)
     test_data = datasets.MNIST(root=out_dir, train=False, transform=compose, download=True)

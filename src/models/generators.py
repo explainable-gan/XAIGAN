@@ -11,11 +11,13 @@ Authors:
     name: Vineel Nagisetty, Laura Graves, Joseph Scott, Vijay Ganesh
     contact: vineel.nagisetty@uwaterloo.ca
 """
+from abc import ABC
+from torch import nn, Tensor, tanh
+from src.utils.vector_utils import normal_init
+import torch.nn.functional as F
 
-from torch import nn, Tensor
 
-
-class GeneratorNet(nn.Module):
+class GeneratorNet(nn.Module, ABC):
     """
     A three hidden-layer generative neural network
     """
@@ -52,7 +54,37 @@ class GeneratorNet(nn.Module):
         return x
 
 
-class GeneratorNetCIFAR10(nn.Module):
+class GeneratorNetDC(nn.Module, ABC):
+    # initializers
+    def __init__(self, d=128):
+        super(GeneratorNetDC, self).__init__()
+        self.deconv1 = nn.ConvTranspose2d(100, d*8, 4, 1, 0)
+        self.deconv1_bn = nn.BatchNorm2d(d*8)
+        self.deconv2 = nn.ConvTranspose2d(d*8, d*4, 4, 2, 1)
+        self.deconv2_bn = nn.BatchNorm2d(d*4)
+        self.deconv3 = nn.ConvTranspose2d(d*4, d*2, 4, 2, 1)
+        self.deconv3_bn = nn.BatchNorm2d(d*2)
+        self.deconv4 = nn.ConvTranspose2d(d*2, d, 4, 2, 1)
+        self.deconv4_bn = nn.BatchNorm2d(d)
+        self.deconv5 = nn.ConvTranspose2d(d, 1, 4, 2, 1)
+
+    # weight_init
+    def weight_init(self, mean, std):
+        for m in self._modules:
+            normal_init(self._modules[m], mean, std)
+
+    # forward method
+    def forward(self, x):
+        # x = F.relu(self.deconv1(input))
+        x = F.relu(self.deconv1_bn(self.deconv1(x)))
+        x = F.relu(self.deconv2_bn(self.deconv2(x)))
+        x = F.relu(self.deconv3_bn(self.deconv3(x)))
+        x = F.relu(self.deconv4_bn(self.deconv4(x)))
+        x = tanh(self.deconv5(x))
+        return x
+
+
+class GeneratorNetCIFAR10(nn.Module, ABC):
     """
     A three hidden-layer generative neural network
     """

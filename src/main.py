@@ -16,9 +16,10 @@ Authors:
 
 import argparse
 import sys
+import torch
 [sys.path.append(i) for i in ['.', '..']]
+
 from src.experiment_enums import experimentsCurrent
-from src.experiment import Experiment
 
 
 def main():
@@ -37,9 +38,10 @@ def experiment_setup(args: argparse.Namespace) -> None:
     :param args: dictionary arguments from user
     :return: None
     """
+    torch.backends.cudnn.benchmark = True
     experiments = experimentsCurrent
     for experiment in experiments:
-        experiment.run(logging_frequency=1)
+        experiment.run(logging_frequency=4)
 
 
 if __name__ == "__main__":

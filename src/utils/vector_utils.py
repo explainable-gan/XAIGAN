@@ -42,33 +42,39 @@ def vectors_to_images(vectors):
     return vectors.view(vectors.size(0), 1, 28, 28)
 
 
-def noise(size: int) -> Variable:
+def noise(size: int, cuda: False) -> Variable:
     """ generates a 1-d vector of normal sampled random values of mean 0 and standard deviation 1 """
-    return Variable(torch.randn(size, 100))
+    result = Variable(torch.randn(size, 100, 1, 1))
+    if cuda:
+        result = result.cuda()
+    return result
 
 
-def ones_target(size: int) -> Variable:
+def ones_target(size: int, cuda: False) -> Variable:
     """ returns tensor filled with 1s of given size """
-    return Variable(torch.ones(size))
+    result = Variable(torch.ones(size))
+    if cuda:
+        result = result.cuda()
+    return result
 
 
-def values_target(size: tuple, value: int) -> Variable:
+def values_target(size: tuple, value: int, cuda: False) -> Variable:
     """ returns tensor filled with value of given size """
-    return Variable(torch.full(size=size, fill_value=value, dtype=torch.long))
+    result = Variable(torch.full(size=size, fill_value=value))
+    if cuda:
+        result = result.cuda()
+    return result
 
 
-def zeros_target(size: int) -> Variable:
+def zeros_target(size: int, cuda: False) -> Variable:
     """ returns tensor filled with 0s of given size """
-    return Variable(torch.zeros(size))
+    result = Variable(torch.zeros(size))
+    if cuda:
+        result = result.cuda()
+    return result
 
 
-def ema(l: list, decay=0.999) -> (list, float):
-    """ get the moving average of a list. decay controls the smoothness """
-    ret = [l[0]]
-    for i in range(1, len(l)):
-        ret.append(l[i] + ret[-1] * decay)
-    val, last = 1.0, -1.0
-    for i in range(len(l)):
-        val = val * decay + 1.0
-        ret[i] /= val
-    return ret, round(val)
+def normal_init(m, mean, std):
+    if isinstance(m, torch.nn.ConvTranspose2d) or isinstance(m, torch.nn.Conv2d):
+        m.weight.data.normal_(mean, std)
+        m.bias.data.zero_()

@@ -12,7 +12,9 @@ Authors:
     contact: vineel.nagisetty@uwaterloo.ca
 """
 from abc import ABC
-from torch import nn, Tensor
+from torch import nn, Tensor, sigmoid
+import torch.nn.functional as F
+from src.utils.vector_utils import normal_init
 
 
 class DiscriminatorNet(nn.Module, ABC):
@@ -50,6 +52,35 @@ class DiscriminatorNet(nn.Module, ABC):
         x = self.hidden1(x)
         x = self.hidden2(x)
         x = self.out(x)
+        return x
+
+
+class DiscriminatorNetDC(nn.Module, ABC):
+    # initializers
+    def __init__(self, d=128):
+        super(DiscriminatorNetDC, self).__init__()
+        self.conv1 = nn.Conv2d(1, d, 4, 2, 1)
+        self.conv2 = nn.Conv2d(d, d*2, 4, 2, 1)
+        self.conv2_bn = nn.BatchNorm2d(d*2)
+        self.conv3 = nn.Conv2d(d*2, d*4, 4, 2, 1)
+        self.conv3_bn = nn.BatchNorm2d(d*4)
+        self.conv4 = nn.Conv2d(d*4, d*8, 4, 2, 1)
+        self.conv4_bn = nn.BatchNorm2d(d*8)
+        self.conv5 = nn.Conv2d(d*8, 1, 4, 1, 0)
+
+    # weight_init
+    def weight_init(self, mean, std):
+        for m in self._modules:
+            normal_init(self._modules[m], mean, std)
+
+    # forward method
+    def forward(self, x):
+        x = F.leaky_relu(self.conv1(x), 0.2)
+        x = F.leaky_relu(self.conv2_bn(self.conv2(x)), 0.2)
+        x = F.leaky_relu(self.conv3_bn(self.conv3(x)), 0.2)
+        x = F.leaky_relu(self.conv4_bn(self.conv4(x)), 0.2)
+        x = sigmoid(self.conv5(x))
+
         return x
 
 
