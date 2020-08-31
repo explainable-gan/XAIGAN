@@ -90,7 +90,7 @@ class Experiment:
                 logger.log(d_error, g_error, epoch, n_batch, num_batches)
 
                 if n_batch % (num_batches // logging_frequency) == 0:
-                    test_images = self.generator(test_noise).data
+                    test_images = self.generator(test_noise).cpu().data
                     logger.log_images(test_images, epoch, n_batch, num_batches)
 
                     # Display status Logs
