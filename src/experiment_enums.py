@@ -19,7 +19,7 @@ class ExperimentEnums(Enum):
         "glr": 0.0002,
         "dlr": 0.0002,
         "loss": nn.BCELoss(),
-        "epochs": 5
+        "epochs": 50
     }
 
     MNIST35PN = {
