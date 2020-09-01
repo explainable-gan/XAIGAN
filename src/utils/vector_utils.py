@@ -17,7 +17,7 @@ from torch.autograd.variable import Variable
 # functions to reshape images
 def images_to_vectors(images: torch.Tensor) -> torch.Tensor:
     """ converts (Nx28x28) tensor to (Nx784) torch tensor """
-    return images.view(images.size(0), 784)
+    return images.view(images.size(0), 32 * 32)
 
 
 def images_to_vectors_numpy(images: np.array) -> torch.Tensor:
@@ -34,17 +34,17 @@ def images_to_vectors_numpy_multiclass(images: np.array) -> torch.Tensor:
 
 def vectors_to_images_numpy(vectors: np.array) -> np.array:
     """ converts (Nx784) tensor to (Nx28x28) numpy array """
-    return vectors.reshape(vectors.shape[0], 1, 28, 28)
+    return vectors.reshape(vectors.shape[0], 32, 32)
 
 
 def vectors_to_images(vectors):
-    """ converts (Nx784) tensor to (Nx28x28) tensor """
-    return vectors.view(vectors.size(0), 1, 28, 28)
+    """ converts (Nx784) tensor to (Nx32x32) tensor """
+    return vectors.view(vectors.size(0), 1, 32, 32)
 
 
 def noise(size: int, cuda: False) -> Variable:
     """ generates a 1-d vector of normal sampled random values of mean 0 and standard deviation 1 """
-    result = Variable(torch.randn(size, 100, 1, 1))
+    result = Variable(torch.randn(size, 100))
     if cuda:
         result = result.cuda()
     return result

@@ -23,16 +23,16 @@ class DiscriminatorNet(nn.Module, ABC):
     """
     def __init__(self):
         super(DiscriminatorNet, self).__init__()
-        n_features = 784
+        n_features = 1024
         n_out = 1
 
         self.input_layer = nn.Sequential(
-            nn.Linear(n_features, 1024),
+            nn.Linear(n_features, 1296),
             nn.LeakyReLU(0.2),
             nn.Dropout(0.3)
         )
         self.hidden1 = nn.Sequential(
-            nn.Linear(1024, 512),
+            nn.Linear(1296, 512),
             nn.LeakyReLU(0.2),
             nn.Dropout(0.3)
         )

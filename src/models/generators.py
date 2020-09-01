@@ -25,7 +25,7 @@ class GeneratorNet(nn.Module, ABC):
     def __init__(self):
         super(GeneratorNet, self).__init__()
         n_features = 100
-        n_out = 784
+        n_out = 1024
 
         self.input_layer = nn.Sequential(
             nn.Linear(n_features, 256),
@@ -36,12 +36,11 @@ class GeneratorNet(nn.Module, ABC):
             nn.LeakyReLU(0.2)
         )
         self.hidden2 = nn.Sequential(
-            nn.Linear(512, 1024),
+            nn.Linear(512, 1296),
             nn.LeakyReLU(0.2)
         )
-
         self.out = nn.Sequential(
-            nn.Linear(1024, n_out),
+            nn.Linear(1296, 1024),
             nn.Tanh()
         )
 

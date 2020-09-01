@@ -26,8 +26,8 @@ class Experiment:
         self.type = experimentType.value
         self.explainable = self.type["explainable"]
         self.explanationType = self.type["explanationType"]
-        self.generator = self.type["generator"](self.type["batchSize"])
-        self.discriminator = self.type["discriminator"](self.type["batchSize"])
+        self.generator = self.type["generator"]()
+        self.discriminator = self.type["discriminator"]()
         self.g_optim = self.type["g_optim"](self.generator.parameters(), lr=self.type["glr"], betas=(0.5, 0.99))
         self.d_optim = self.type["d_optim"](self.discriminator.parameters(), lr=self.type["dlr"], betas=(0.5, 0.99))
         self.loss = self.type["loss"]
@@ -35,9 +35,6 @@ class Experiment:
         self.cuda = True if torch.cuda.is_available() else False
 
     def run(self, logging_frequency=4) -> (list, list):
-
-        self.generator.weight_init(mean=0, std=0.02)
-        self.discriminator.weight_init(mean=0, std=0.02)
 
         logger = Logger(self.name, samples=16)
         test_noise = noise(logger.samples, self.cuda)
@@ -48,6 +45,7 @@ class Experiment:
         if self.cuda:
             self.generator = self.generator.cuda()
             self.discriminator = self.discriminator.cuda()
+            self.loss = self.loss.cuda()
 
         # track losses
         G_losses = []
@@ -61,7 +59,7 @@ class Experiment:
                 N = real_batch.size(0)
 
                 # 1. Train Discriminator
-                real_data = Variable(real_batch)
+                real_data = Variable(images_to_vectors(real_batch))
 
                 # Generate fake data and detach (so gradients are not calculated for generator)
                 fake_data = self.generator(noise(N, self.cuda)).detach()
@@ -90,7 +88,7 @@ class Experiment:
                 logger.log(d_error, g_error, epoch, n_batch, num_batches)
 
                 if n_batch % (num_batches // logging_frequency) == 0:
-                    test_images = self.generator(test_noise).cpu().data
+                    test_images = vectors_to_images(self.generator(test_noise)).cpu().data
                     logger.log_images(test_images, epoch, n_batch, num_batches)
 
                     # Display status Logs

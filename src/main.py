@@ -19,7 +19,7 @@ import sys
 import torch
 [sys.path.append(i) for i in ['.', '..']]
 
-from src.experiment_enums import experimentsCurrent
+from src.experiment_enums import experimentsAll
 
 
 def main():
@@ -39,7 +39,7 @@ def experiment_setup(args: argparse.Namespace) -> None:
     :return: None
     """
     torch.backends.cudnn.benchmark = True
-    experiments = experimentsCurrent
+    experiments = experimentsAll
     for experiment in experiments:
         experiment.run(logging_frequency=4)
 

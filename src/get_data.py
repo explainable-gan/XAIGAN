@@ -6,9 +6,9 @@ data_folder = "./src/data"
 def fminst_data():
     """ Get MNIST data """
     compose = transforms.Compose([
-        transforms.Resize(64),
+        transforms.Resize(32),
         transforms.ToTensor(),
-        transforms.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5))
+        transforms.Normalize([0.5, ], [0.5, ])
         ])
     out_dir = data_folder
     train_data = datasets.FashionMNIST(root=out_dir, train=True, transform=compose, download=True)
@@ -19,7 +19,7 @@ def fminst_data():
 def mnist_data():
     """ Get MNIST data """
     compose = transforms.Compose([
-        transforms.Resize(64),
+        transforms.Resize(32),
         transforms.ToTensor(),
         transforms.Normalize([.5, ], [.5, ])
         ])
@@ -33,6 +33,8 @@ def get_loader(batchSize=100, percentage=1, dataset="mnist"):
     if dataset == "mnist":
         data = mnist_data()
     elif dataset == "fmnist":
+        data = fminst_data()
+    elif dataset == "cifar":
         data = fminst_data()
     else:
         raise Exception("dataset name not correct (or not implemented)")
