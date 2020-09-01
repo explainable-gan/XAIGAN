@@ -51,8 +51,8 @@ class Logger:
     def save_errors(self, g_loss, d_loss):
         out_dir = f'./src/results/errors/{self.data_subdir}/'
         Logger._make_dir(out_dir)
-        np.save(g_loss, out_dir+"g_loss.npy")
-        np.save(d_loss, out_dir+"d_loss.npy")
+        np.save(out_dir+"g_loss.npy", np.array(g_loss))
+        np.save(out_dir+"d_loss.npy", np.array(d_loss))
 
         plt.plot(g_loss, color="blue", label="generator")
         plt.plot(d_loss, color="orange", label="discriminator")
