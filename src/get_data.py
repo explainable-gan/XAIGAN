@@ -1,6 +1,6 @@
 from torch.utils.data import ConcatDataset, DataLoader, sampler
 from torchvision import transforms, datasets
-data_folder = "./src/data"
+data_folder = "./data"
 
 
 def fminst_data():
