@@ -41,7 +41,7 @@ def experiment_setup(args: argparse.Namespace) -> None:
     torch.backends.cudnn.benchmark = True
     experiments = experimentsAll
     for experiment in experiments:
-        experiment.run(logging_frequency=4)
+        experiment.run(logging_frequency=1)
 
 
 if __name__ == "__main__":

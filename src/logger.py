@@ -48,6 +48,17 @@ class Logger:
         self.writer.add_scalar(
             '{}/G_error'.format(self.comment), g_error, step)
 
+    def save_errors(self, g_loss, d_loss):
+        out_dir = f'./src/results/errors/{self.data_subdir}/'
+        Logger._make_dir(out_dir)
+        np.save(g_loss, out_dir+"g_loss.npy")
+        np.save(d_loss, out_dir+"d_loss.npy")
+
+        plt.plot(g_loss, color="blue", label="generator")
+        plt.plot(d_loss, color="orange", label="discriminator")
+        plt.legend()
+        plt.savefig(out_dir+"plotLoss.png")
+
     def log_images(self, images, epoch, n_batch, num_batches, format='NCHW', normalize=True):
         '''
         input images are expected in format (NCHW)
@@ -109,6 +120,8 @@ class Logger:
 
     def save_models(self, generator, discriminator):
         out_dir = './src/results/models/{}'.format(self.data_subdir)
+        Logger._make_dir(out_dir)
+
         torch.save(generator.state_dict(),
                    '{}/generator.pt'.format(out_dir))
         torch.save(discriminator.state_dict(),

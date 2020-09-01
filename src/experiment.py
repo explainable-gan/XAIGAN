@@ -98,8 +98,8 @@ class Experiment:
                     )
 
         logger.save_models(generator=self.generator, discriminator=self.discriminator)
-
-        return G_losses, D_losses
+        logger.save_errors(g_loss=G_losses, d_loss=D_losses)
+        return
 
     def _train_generator(self, fake_data: torch.Tensor) -> torch.Tensor:
         """
