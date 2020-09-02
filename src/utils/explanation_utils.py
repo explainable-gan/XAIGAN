@@ -77,7 +77,8 @@ def explanation_hook(module, grad_input, grad_output):
     temp = get_values()
 
     # multiply with mask
-    new_grad = grad_input[0] + (grad_input[0] * temp)
+    sign = torch.sign(grad_input[0])
+    new_grad = grad_input[0] + sign * (grad_input[0] * temp)
 
     # limit = 2e5
 
