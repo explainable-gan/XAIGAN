@@ -14,7 +14,7 @@ Authors:
 
 import numpy as np
 import torch
-from captum.attr import GradientShap, DeepLiftShap, IntegratedGradients, Saliency, GradientAttribution
+from captum.attr import DeepLiftShap, IntegratedGradients, Saliency, GuidedBackprop
 from src.utils.vector_utils import vectors_to_images
 
 
@@ -52,8 +52,8 @@ def get_explanation(generated_data, discriminator, prediction, XAItype="shap", c
 
         elif XAItype == "gradient":
             for i in range(len(indices)):
-                explainer = GradientAttribution(discriminator)
-                temp[indices[i], :] = explainer.attribute(data[i, :].detach(), target=1)
+                explainer = GuidedBackprop(discriminator)
+                temp[indices[i], :] = explainer.attribute(data[i, :].detach())
 
     if cuda:
         temp = temp.cuda()
