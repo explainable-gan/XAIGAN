@@ -52,6 +52,8 @@ class Experiment:
             trained_data = Variable(images_to_vectors(next(iter(loader))[0]))
             if self.cuda:
                 trained_data = trained_data.cuda()
+        else:
+            trained_data = None
 
         # track losses
         G_losses = []
