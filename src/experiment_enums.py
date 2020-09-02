@@ -7,9 +7,9 @@ from src.experiment import Experiment
 
 class ExperimentEnums(Enum):
 
-    MNIST5Normal = {
-        "explainable": False,
-        "explanationType": None,
+    MNIST5Gradient = {
+        "explainable": True,
+        "explanationType": "gradient",
         "generator": GeneratorNet,
         "discriminator": DiscriminatorNet,
         "dataset": "mnist",
@@ -23,37 +23,37 @@ class ExperimentEnums(Enum):
         "epochs": 50
     }
 
-    MNIST5Saliency = {
-        "explainable": True,
-        "explanationType": "saliency",
-        "generator": GeneratorNet,
-        "discriminator": DiscriminatorNet,
-        "dataset": "mnist",
-        "batchSize": 100,
-        "percentage": 0.05,
-        "g_optim": optim.Adam,
-        "d_optim": optim.Adam,
-        "glr": 0.0002,
-        "dlr": 0.0002,
-        "loss": nn.BCELoss(),
-        "epochs": 50
-    }
-
-    MNIST5Shap = {
-        "explainable": True,
-        "explanationType": "shap",
-        "generator": GeneratorNet,
-        "discriminator": DiscriminatorNet,
-        "dataset": "mnist",
-        "batchSize": 100,
-        "percentage": 0.05,
-        "g_optim": optim.Adam,
-        "d_optim": optim.Adam,
-        "glr": 0.0002,
-        "dlr": 0.0002,
-        "loss": nn.BCELoss(),
-        "epochs": 50
-    }
+    # MNIST5Saliency = {
+    #     "explainable": True,
+    #     "explanationType": "saliency",
+    #     "generator": GeneratorNet,
+    #     "discriminator": DiscriminatorNet,
+    #     "dataset": "mnist",
+    #     "batchSize": 100,
+    #     "percentage": 0.05,
+    #     "g_optim": optim.Adam,
+    #     "d_optim": optim.Adam,
+    #     "glr": 0.0002,
+    #     "dlr": 0.0002,
+    #     "loss": nn.BCELoss(),
+    #     "epochs": 50
+    # }
+    #
+    # MNIST5Shap = {
+    #     "explainable": True,
+    #     "explanationType": "shap",
+    #     "generator": GeneratorNet,
+    #     "discriminator": DiscriminatorNet,
+    #     "dataset": "mnist",
+    #     "batchSize": 100,
+    #     "percentage": 0.05,
+    #     "g_optim": optim.Adam,
+    #     "d_optim": optim.Adam,
+    #     "glr": 0.0002,
+    #     "dlr": 0.0002,
+    #     "loss": nn.BCELoss(),
+    #     "epochs": 50
+    # }
 
     # MNIST100Normal = {
     #     "explainable": False,
