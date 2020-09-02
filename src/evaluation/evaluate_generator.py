@@ -15,7 +15,7 @@ def main():
     :return:
     """
     parser = argparse.ArgumentParser(description="calculate metrics given a path of saved generator")
-    parser.add_argument("-f", "--file", default="./../results/models/MNIST35Saliency/2020-09-02/generator.pt",
+    parser.add_argument("-f", "--file", default="./../results/models/MNIST5Perturb/2020-09-02/generator.pt",
                         help="path of the file")
     parser.add_argument("-t", "--type", default="mnist", help="type of the dataset")
     parser.add_argument("-n", "--number_of_samples",

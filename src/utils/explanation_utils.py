@@ -14,7 +14,7 @@ Authors:
 
 import numpy as np
 import torch
-from captum.attr import DeepLiftShap, IntegratedGradients, Saliency, Deconvolution, FeaturePermutation
+from captum.attr import DeepLiftShap, Saliency, Deconvolution, FeaturePermutation
 from src.utils.vector_utils import vectors_to_images
 
 
@@ -81,9 +81,9 @@ def explanation_hook(module, grad_input, grad_output):
 
     limit = 2e5
 
-    # clamp result
-    new_grad = torch.clamp(new_grad, min=grad_input[0].min()-limit,
-                           max=grad_input[0].max()+limit)
+    # # clamp result
+    # new_grad = torch.clamp(new_grad, min=grad_input[0].min()-limit,
+    #                        max=grad_input[0].max()+limit)
     return (new_grad, )
 
 
