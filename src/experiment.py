@@ -15,6 +15,7 @@ Authors:
 from src.get_data import get_loader
 from src.utils.vector_utils import noise, ones_target, zeros_target, images_to_vectors, vectors_to_images
 from src.logger import Logger
+from src.utils.explanation_utils import explanation_hook, get_explanation
 from torch.autograd import Variable
 from torch import nn
 import torch
@@ -51,8 +52,13 @@ class Experiment:
         G_losses = []
         D_losses = []
 
+        local_explainable = False
         # Start training
         for epoch in range(1, self.epochs + 1):
+
+            if self.explainable and self.epochs / epoch == 2:
+                self.generator.out.register_backward_hook(explanation_hook)
+                local_explainable = True
 
             for n_batch, (real_batch, _) in enumerate(loader):
 
@@ -79,7 +85,7 @@ class Experiment:
                     fake_data = fake_data.cuda()
 
                 # Train G
-                g_error = self._train_generator(fake_data=fake_data)
+                g_error = self._train_generator(fake_data=fake_data, local_explainable=local_explainable)
 
                 # Save Losses for plotting later
                 G_losses.append(g_error.item())
@@ -101,7 +107,7 @@ class Experiment:
         logger.save_errors(g_loss=G_losses, d_loss=D_losses)
         return
 
-    def _train_generator(self, fake_data: torch.Tensor) -> torch.Tensor:
+    def _train_generator(self, fake_data: torch.Tensor, local_explainable) -> torch.Tensor:
         """
         This function performs one iteration of training the generator
         :param fake_data: tensor data created by generator
@@ -114,6 +120,9 @@ class Experiment:
 
         # Sample noise and generate fake data
         prediction = self.discriminator(fake_data).squeeze()
+
+        if local_explainable:
+            get_explanation(generated_data=fake_data, discriminator=self.discriminator, prediction=prediction, XAItype=self.explanationType, cuda=self.cuda)
 
         # Calculate error and back-propagate
         error = self.loss(prediction, zeros_target(N, self.cuda))

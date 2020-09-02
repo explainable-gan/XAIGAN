@@ -6,9 +6,9 @@ from src.experiment import Experiment
 
 
 class ExperimentEnums(Enum):
-    MNIST100PN = {
-        "explainable": False,
-        "explanationType": None,
+    MNIST100PS = {
+        "explainable": True,
+        "explanationType": "saliency",
         "generator": GeneratorNet,
         "discriminator": DiscriminatorNet,
         "dataset": "mnist",
@@ -22,9 +22,9 @@ class ExperimentEnums(Enum):
         "epochs": 50
     }
 
-    MNIST35PN = {
-        "explainable": False,
-        "explanationType": None,
+    MNIST35PS = {
+        "explainable": True,
+        "explanationType": "saliency",
         "generator": GeneratorNet,
         "discriminator": DiscriminatorNet,
         "dataset": "mnist",
@@ -38,9 +38,9 @@ class ExperimentEnums(Enum):
         "epochs": 50
     }
 
-    FMNIST100PN = {
-        "explainable": False,
-        "explanationType": None,
+    FMNIST100PS = {
+        "explainable": True,
+        "explanationType": "saliency",
         "generator": GeneratorNet,
         "discriminator": DiscriminatorNet,
         "dataset": "fmnist",
@@ -54,9 +54,9 @@ class ExperimentEnums(Enum):
         "epochs": 50
     }
 
-    FMNIST35PN = {
-        "explainable": False,
-        "explanationType": None,
+    FMNIST35PS = {
+        "explainable": True,
+        "explanationType": "saliency",
         "generator": GeneratorNet,
         "discriminator": DiscriminatorNet,
         "dataset": "fmnist",

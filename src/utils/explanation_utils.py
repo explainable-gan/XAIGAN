@@ -14,7 +14,7 @@ Authors:
 
 import numpy as np
 import torch
-import shap
+from captum.attr import GradientShap, DeepLift, IntegratedGradients, Saliency
 from src.utils.vector_utils import vectors_to_images
 
 
@@ -22,7 +22,7 @@ from src.utils.vector_utils import vectors_to_images
 values = None
 
 
-def shap_explanation(background_selector, fake_data: torch.Tensor, predictor) -> None:
+def get_explanation(generated_data, discriminator, prediction, XAItype="saliency", cuda=True) -> None:
     """
     This function calls the shap module, computes the mask and sets new gradient values
     :param background_selector: background selector that gives background data
@@ -30,9 +30,23 @@ def shap_explanation(background_selector, fake_data: torch.Tensor, predictor) ->
     :param predictor: the classifier model
     :return:
     """
-    background_data = background_selector.get_background(vectors_to_images(fake_data))
-    explainer = shap.DeepExplainer(predictor, background_data)
-    temp = normalize_shap(np.absolute(explainer.shap_values(fake_data.detach())))
+    # initialize temp values to all 1s
+    temp = torch.ones(size=generated_data.size())
+
+    # mask values with low prediction
+    mask = (prediction < 0.5).squeeze()
+    indices = (mask.nonzero()).cpu().numpy().flatten().tolist()
+
+    data = generated_data[mask, :]
+
+    if data.size(0) > 0:
+        if XAItype == "saliency":
+            for i in range(len(indices)):
+                explainer = Saliency(discriminator)
+                temp[indices[i], :] = explainer.attribute(data[i, :].detach())
+
+    if cuda:
+        temp = temp.cuda()
     set_values(temp)
 
 
@@ -44,16 +58,24 @@ def explanation_hook(module, grad_input, grad_output):
     :param grad_output: the gradients from the output layer
     :return:
     """
+    # get stored mask
     temp = get_values()
-    new_grad = grad
-    temp = torch.from_numpy(get_values())
-    new_grad = grad_output[0] * temp
-    return new_grad,
+
+    # multiply with mask
+    new_grad = grad_input[0] + 0.2 * (grad_input[0] * temp)
+
+    limit = 2e5
+
+    # clamp result
+    new_grad = torch.clamp(new_grad, min=grad_input[0].min()-limit,
+                           max=grad_input[0].max()+limit)
+    return (new_grad, )
 
 
-def normalize_shap(vector: np.array) -> np.array:
+def normalize_vector(vector: np.array) -> np.array:
     """ normalize np array to the range of [0,1] and returns as float32 values """
-    vector = ((vector-vector.min())/(vector.max()-vector.min()))
+    vector -= vector.min()
+    vector /= vector.max()
     return np.float32(vector)
 
 
