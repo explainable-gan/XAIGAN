@@ -77,9 +77,9 @@ def explanation_hook(module, grad_input, grad_output):
     temp = get_values()
 
     # multiply with mask
-    new_grad = grad_input[0] + 0.2 * (grad_input[0] * temp)
+    new_grad = grad_input[0] + (grad_input[0] * temp)
 
-    limit = 2e5
+    # limit = 2e5
 
     # # clamp result
     # new_grad = torch.clamp(new_grad, min=grad_input[0].min()-limit,
