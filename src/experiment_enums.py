@@ -7,14 +7,14 @@ from src.experiment import Experiment
 
 class ExperimentEnums(Enum):
 
-    MNIST5Shap = {
+    MNIST100Perturb = {
         "explainable": True,
-        "explanationType": "shap",
+        "explanationType": "perturb",
         "generator": GeneratorNet,
         "discriminator": DiscriminatorNet,
         "dataset": "mnist",
         "batchSize": 100,
-        "percentage": 0.05,
+        "percentage": 1,
         "g_optim": optim.Adam,
         "d_optim": optim.Adam,
         "glr": 0.0002,
@@ -22,6 +22,70 @@ class ExperimentEnums(Enum):
         "loss": nn.BCELoss(),
         "epochs": 50
     }
+
+    MNIST35Perturb = {
+        "explainable": True,
+        "explanationType": "perturb",
+        "generator": GeneratorNet,
+        "discriminator": DiscriminatorNet,
+        "dataset": "mnist",
+        "batchSize": 100,
+        "percentage": 0.35,
+        "g_optim": optim.Adam,
+        "d_optim": optim.Adam,
+        "glr": 0.0002,
+        "dlr": 0.0002,
+        "loss": nn.BCELoss(),
+        "epochs": 50
+    }
+
+    FMNIST100Perturb = {
+        "explainable": True,
+        "explanationType": "perturb",
+        "generator": GeneratorNet,
+        "discriminator": DiscriminatorNet,
+        "dataset": "fmnist",
+        "batchSize": 100,
+        "percentage": 1,
+        "g_optim": optim.Adam,
+        "d_optim": optim.Adam,
+        "glr": 0.0002,
+        "dlr": 0.0002,
+        "loss": nn.BCELoss(),
+        "epochs": 50
+    }
+
+    FMNIST35Perturb = {
+        "explainable": True,
+        "explanationType": "perturb",
+        "generator": GeneratorNet,
+        "discriminator": DiscriminatorNet,
+        "dataset": "fmnist",
+        "batchSize": 100,
+        "percentage": 0.35,
+        "g_optim": optim.Adam,
+        "d_optim": optim.Adam,
+        "glr": 0.0002,
+        "dlr": 0.0002,
+        "loss": nn.BCELoss(),
+        "epochs": 50
+    }
+
+    # MNIST5Shap = {
+    #     "explainable": True,
+    #     "explanationType": "shap",
+    #     "generator": GeneratorNet,
+    #     "discriminator": DiscriminatorNet,
+    #     "dataset": "mnist",
+    #     "batchSize": 100,
+    #     "percentage": 0.05,
+    #     "g_optim": optim.Adam,
+    #     "d_optim": optim.Adam,
+    #     "glr": 0.0002,
+    #     "dlr": 0.0002,
+    #     "loss": nn.BCELoss(),
+    #     "epochs": 50
+    # }
 
     # MNIST5Saliency = {
     #     "explainable": True,
