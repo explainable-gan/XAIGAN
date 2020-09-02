@@ -14,7 +14,7 @@ Authors:
 
 import numpy as np
 import torch
-from captum.attr import GradientShap, DeepLift, IntegratedGradients, Saliency
+from captum.attr import GradientShap, DeepLiftShap, IntegratedGradients, Saliency
 from src.utils.vector_utils import vectors_to_images
 
 
@@ -22,7 +22,7 @@ from src.utils.vector_utils import vectors_to_images
 values = None
 
 
-def get_explanation(generated_data, discriminator, prediction, XAItype="saliency", cuda=True) -> None:
+def get_explanation(generated_data, discriminator, prediction, XAItype="shap", cuda=True, trained_data=None) -> None:
     """
     This function calls the shap module, computes the mask and sets new gradient values
     :param background_selector: background selector that gives background data
@@ -44,6 +44,13 @@ def get_explanation(generated_data, discriminator, prediction, XAItype="saliency
             for i in range(len(indices)):
                 explainer = Saliency(discriminator)
                 temp[indices[i], :] = explainer.attribute(data[i, :].detach())
+
+        elif XAItype == "shap":
+            for i in range(len(indices)):
+                explainer = DeepLiftShap(discriminator)
+                temp[indices[i], :] = explainer.attribute(data[i, :].detach().unsqueeze(0), trained_data, target=0)
+
+
 
     if cuda:
         temp = temp.cuda()

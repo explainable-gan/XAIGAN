@@ -48,6 +48,11 @@ class Experiment:
             self.discriminator = self.discriminator.cuda()
             self.loss = self.loss.cuda()
 
+        if self.explainable:
+            trained_data = Variable(images_to_vectors(next(iter(loader))[0]))
+            if self.cuda:
+                trained_data = trained_data.cuda()
+
         # track losses
         G_losses = []
         D_losses = []
@@ -85,7 +90,7 @@ class Experiment:
                     fake_data = fake_data.cuda()
 
                 # Train G
-                g_error = self._train_generator(fake_data=fake_data, local_explainable=local_explainable)
+                g_error = self._train_generator(fake_data=fake_data, local_explainable=local_explainable, trained_data=trained_data)
 
                 # Save Losses for plotting later
                 G_losses.append(g_error.item())
@@ -107,7 +112,7 @@ class Experiment:
         logger.save_errors(g_loss=G_losses, d_loss=D_losses)
         return
 
-    def _train_generator(self, fake_data: torch.Tensor, local_explainable) -> torch.Tensor:
+    def _train_generator(self, fake_data: torch.Tensor, local_explainable, trained_data=None) -> torch.Tensor:
         """
         This function performs one iteration of training the generator
         :param fake_data: tensor data created by generator
@@ -122,7 +127,7 @@ class Experiment:
         prediction = self.discriminator(fake_data).squeeze()
 
         if local_explainable:
-            get_explanation(generated_data=fake_data, discriminator=self.discriminator, prediction=prediction, XAItype=self.explanationType, cuda=self.cuda)
+            get_explanation(generated_data=fake_data, discriminator=self.discriminator, prediction=prediction, XAItype=self.explanationType, cuda=self.cuda, trained_data=trained_data)
 
         # Calculate error and back-propagate
         error = self.loss(prediction, zeros_target(N, self.cuda))
