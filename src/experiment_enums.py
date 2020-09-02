@@ -7,9 +7,9 @@ from src.experiment import Experiment
 
 class ExperimentEnums(Enum):
 
-    MNIST5Deconv = {
+    MNIST5Perturb = {
         "explainable": True,
-        "explanationType": "deconv",
+        "explanationType": "perturb",
         "generator": GeneratorNet,
         "discriminator": DiscriminatorNet,
         "dataset": "mnist",

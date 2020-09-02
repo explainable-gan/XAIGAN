@@ -14,7 +14,7 @@ Authors:
 
 import numpy as np
 import torch
-from captum.attr import DeepLiftShap, IntegratedGradients, Saliency, Deconvolution
+from captum.attr import DeepLiftShap, IntegratedGradients, Saliency, Deconvolution, FeaturePermutation
 from src.utils.vector_utils import vectors_to_images
 
 
@@ -53,6 +53,11 @@ def get_explanation(generated_data, discriminator, prediction, XAItype="shap", c
         elif XAItype == "deconv":
             for i in range(len(indices)):
                 explainer = Deconvolution(discriminator)
+                temp[indices[i], :] = explainer.attribute(data[i, :].detach())
+
+        elif XAItype == "perturb":
+            for i in range(len(indices)):
+                explainer = FeaturePermutation(discriminator)
                 temp[indices[i], :] = explainer.attribute(data[i, :].detach())
 
     if cuda:
