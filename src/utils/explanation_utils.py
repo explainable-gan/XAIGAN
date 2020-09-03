@@ -59,9 +59,10 @@ def get_explanation(generated_data, discriminator, prediction, XAItype="shap", c
             explainer = lime_image.LimeImageExplainer()
             global discriminatorLime
             discriminatorLime = deepcopy(discriminator)
+            discriminatorLime.cpu()
             discriminatorLime.eval()
             for i in range(len(indices)):
-                exp = explainer.explain_instance(data[i, :].unsqueeze(0).detach(), batch_predict, num_samples=100)
+                exp = explainer.explain_instance(data[i, :].unsqueeze(0).detach().cpu(), batch_predict, num_samples=100)
                 _, mask = exp.get_image_and_mask(exp.top_labels[0], positive_only=False, negative_only=False)
                 temp[indices[i], :] = torch.tensor(mask.astype(np.float))
             del discriminatorLime
