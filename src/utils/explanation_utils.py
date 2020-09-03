@@ -13,11 +13,15 @@ Authors:
 """
 
 import numpy as np
+from copy import deepcopy
 import torch
+from torch.nn import functional as F
 from captum.attr import DeepLiftShap, Saliency, InputXGradient, FeaturePermutation
+from lime import lime_image
 
 # defining global variables
 global values
+global discriminatorLime
 
 
 def get_explanation(generated_data, discriminator, prediction, XAItype="shap", cuda=True, trained_data=None) -> None:
@@ -26,7 +30,7 @@ def get_explanation(generated_data, discriminator, prediction, XAItype="shap", c
 
     # mask values with low prediction
     mask = (prediction < 0.5).squeeze()
-    indices = (mask.nonzero(as_tuple=False)).cpu().numpy().flatten().tolist()
+    indices = (mask.nonzero(as_tuple=False)).detach().cpu().numpy().flatten().tolist()
 
     data = generated_data[mask, :]
 
@@ -51,9 +55,21 @@ def get_explanation(generated_data, discriminator, prediction, XAItype="shap", c
                 explainer = FeaturePermutation(discriminator)
                 temp[indices[i], :] = explainer.attribute(data[i, :].detach())
 
+        elif XAItype == "lime":
+            explainer = lime_image.LimeImageExplainer()
+            global discriminatorLime
+            discriminatorLime = deepcopy(discriminator)
+            discriminatorLime.eval()
+            for i in range(len(indices)):
+                exp = explainer.explain_instance(data[i, :].unsqueeze(0).detach(), batch_predict, num_samples=100,
+                                                 progress_bar=False)
+                _, mask = exp.get_image_and_mask(exp.top_labels[0], positive_only=False, negative_only=False)
+                temp[indices[i], :] = torch.tensor(mask.astype(np.float))
+            del discriminatorLime
+
     if cuda:
         temp = temp.cuda()
-    set_values(temp)
+    set_values(normalize_vector(temp))
 
 
 def explanation_hook(module, grad_input, grad_output):
@@ -70,19 +86,19 @@ def explanation_hook(module, grad_input, grad_output):
     # multiply with mask
     new_grad = grad_input[0] + 0.2 * (grad_input[0] * temp)
 
-    # limit = 2e5
-
     # # clamp result
+    # limit = 2e5
     # new_grad = torch.clamp(new_grad, min=grad_input[0].min()-limit,
     #                        max=grad_input[0].max()+limit)
     return (new_grad, )
 
 
-def normalize_vector(vector: np.array) -> np.array:
+def normalize_vector(vector: torch.tensor) -> torch.tensor:
     """ normalize np array to the range of [0,1] and returns as float32 values """
     vector -= vector.min()
     vector /= vector.max()
-    return np.float32(vector)
+    vector[torch.isnan(vector)] = 0
+    return vector.type(torch.float32)
 
 
 def get_values() -> np.array:
@@ -95,3 +111,16 @@ def set_values(x: np.array) -> None:
     """ set global values """
     global values
     values = x
+
+
+def batch_predict(images):
+    # convert images to greyscale
+    images = np.mean(images, axis=3)
+    # stack up all images
+    batch = torch.stack([i for i in torch.Tensor(images)], dim=0)
+    batch = batch.squeeze()
+    logits = discriminatorLime(batch)
+    probs = F.softmax(logits, dim=1)
+    return probs.detach().numpy()
+
+

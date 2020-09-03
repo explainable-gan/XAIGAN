@@ -7,70 +7,86 @@ from src.experiment import Experiment
 
 class ExperimentEnums(Enum):
 
-    MNIST100Input = {
+    MNIST5Shap = {
         "explainable": True,
-        "explanationType": "inputXGradient",
+        "explanationType": "lime",
         "generator": GeneratorNet,
         "discriminator": DiscriminatorNet,
         "dataset": "mnist",
         "batchSize": 100,
-        "percentage": 1,
+        "percentage": 0.05,
         "g_optim": optim.Adam,
         "d_optim": optim.Adam,
         "glr": 0.0002,
         "dlr": 0.0002,
         "loss": nn.BCELoss(),
-        "epochs": 50
+        "epochs": 4
     }
 
-    MNIST35Input = {
-        "explainable": True,
-        "explanationType": "inputXGradient",
-        "generator": GeneratorNet,
-        "discriminator": DiscriminatorNet,
-        "dataset": "mnist",
-        "batchSize": 100,
-        "percentage": 0.35,
-        "g_optim": optim.Adam,
-        "d_optim": optim.Adam,
-        "glr": 0.0002,
-        "dlr": 0.0002,
-        "loss": nn.BCELoss(),
-        "epochs": 50
-    }
-
-    FMNIST100Input = {
-        "explainable": True,
-        "explanationType": "inputXGradient",
-        "generator": GeneratorNet,
-        "discriminator": DiscriminatorNet,
-        "dataset": "fmnist",
-        "batchSize": 100,
-        "percentage": 1,
-        "g_optim": optim.Adam,
-        "d_optim": optim.Adam,
-        "glr": 0.0002,
-        "dlr": 0.0002,
-        "loss": nn.BCELoss(),
-        "epochs": 50
-    }
-
-    FMNIST35Input = {
-        "explainable": True,
-        "explanationType": "inputXGradient",
-        "generator": GeneratorNet,
-        "discriminator": DiscriminatorNet,
-        "dataset": "fmnist",
-        "batchSize": 100,
-        "percentage": 0.35,
-        "g_optim": optim.Adam,
-        "d_optim": optim.Adam,
-        "glr": 0.0002,
-        "dlr": 0.0002,
-        "loss": nn.BCELoss(),
-        "epochs": 50
-    }
-
+    # MNIST100Input = {
+    #     "explainable": True,
+    #     "explanationType": "inputXGradient",
+    #     "generator": GeneratorNet,
+    #     "discriminator": DiscriminatorNet,
+    #     "dataset": "mnist",
+    #     "batchSize": 100,
+    #     "percentage": 1,
+    #     "g_optim": optim.Adam,
+    #     "d_optim": optim.Adam,
+    #     "glr": 0.0002,
+    #     "dlr": 0.0002,
+    #     "loss": nn.BCELoss(),
+    #     "epochs": 2
+    # }
+    #
+    # MNIST35Input = {
+    #     "explainable": True,
+    #     "explanationType": "inputXGradient",
+    #     "generator": GeneratorNet,
+    #     "discriminator": DiscriminatorNet,
+    #     "dataset": "mnist",
+    #     "batchSize": 100,
+    #     "percentage": 0.35,
+    #     "g_optim": optim.Adam,
+    #     "d_optim": optim.Adam,
+    #     "glr": 0.0002,
+    #     "dlr": 0.0002,
+    #     "loss": nn.BCELoss(),
+    #     "epochs": 50
+    # }
+    #
+    # FMNIST100Input = {
+    #     "explainable": True,
+    #     "explanationType": "inputXGradient",
+    #     "generator": GeneratorNet,
+    #     "discriminator": DiscriminatorNet,
+    #     "dataset": "fmnist",
+    #     "batchSize": 100,
+    #     "percentage": 1,
+    #     "g_optim": optim.Adam,
+    #     "d_optim": optim.Adam,
+    #     "glr": 0.0002,
+    #     "dlr": 0.0002,
+    #     "loss": nn.BCELoss(),
+    #     "epochs": 50
+    # }
+    #
+    # FMNIST35Input = {
+    #     "explainable": True,
+    #     "explanationType": "inputXGradient",
+    #     "generator": GeneratorNet,
+    #     "discriminator": DiscriminatorNet,
+    #     "dataset": "fmnist",
+    #     "batchSize": 100,
+    #     "percentage": 0.35,
+    #     "g_optim": optim.Adam,
+    #     "d_optim": optim.Adam,
+    #     "glr": 0.0002,
+    #     "dlr": 0.0002,
+    #     "loss": nn.BCELoss(),
+    #     "epochs": 50
+    # }
+    #
     # MNIST100Perturb = {
     #     "explainable": True,
     #     "explanationType": "perturb",
