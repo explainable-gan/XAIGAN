@@ -12,8 +12,7 @@ Authors:
     contact: vineel.nagisetty@uwaterloo.ca
 """
 
-from torch import nn, Tensor, tanh
-import torch.nn.functional as F
+from torch import nn, Tensor
 
 
 class GeneratorNet(nn.Module):

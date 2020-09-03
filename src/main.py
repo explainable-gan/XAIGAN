@@ -12,7 +12,7 @@ Contact:
 """
 
 import argparse
-from src.experiment_enums import experimentsAll
+from experiment_enums import experimentsAll
 
 
 def main():

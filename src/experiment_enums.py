@@ -1,8 +1,8 @@
 from enum import Enum
-from src.models.generators import GeneratorNet
-from src.models.discriminators import DiscriminatorNet
+from models.generators import GeneratorNet
+from models.discriminators import DiscriminatorNet
 from torch import nn, optim
-from src.experiment import Experiment
+from experiment import Experiment
 
 
 class ExperimentEnums(Enum):

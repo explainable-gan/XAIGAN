@@ -11,10 +11,10 @@ Contact:
     explainable.gan@gmail.com
 """
 
-from src.get_data import get_loader
-from src.utils.vector_utils import noise, ones_target, zeros_target, images_to_vectors, vectors_to_images
-from src.logger import Logger
-from src.utils.explanation_utils import explanation_hook, get_explanation
+from get_data import get_loader
+from utils.vector_utils import noise, ones_target, zeros_target, images_to_vectors, vectors_to_images
+from logger import Logger
+from utils.explanation_utils import explanation_hook, get_explanation
 from torch.autograd import Variable
 from torch import nn
 import torch

@@ -11,8 +11,7 @@ Authors:
     name: Vineel Nagisetty, Laura Graves, Joseph Scott, Vijay Ganesh
     contact: vineel.nagisetty@uwaterloo.ca
 """
-from torch import nn, Tensor, sigmoid
-import torch.nn.functional as F
+from torch import nn, Tensor, clamp
 
 
 class DiscriminatorNet(nn.Module):
@@ -50,7 +49,7 @@ class DiscriminatorNet(nn.Module):
         x = self.hidden1(x)
         x = self.hidden2(x)
         x = self.out(x)
-        return x
+        return clamp(x, min=0, max=1)
 
 
 class DiscriminatorNetCIFAR10(nn.Module):
