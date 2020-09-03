@@ -110,7 +110,7 @@ class Experiment:
                         d_error, g_error, d_pred_real, d_pred_fake
                     )
 
-        logger.save_models(generator=self.generator, discriminator=self.discriminator)
+        logger.save_models(generator=self.generator)
         logger.save_errors(g_loss=G_losses, d_loss=D_losses)
         return
 

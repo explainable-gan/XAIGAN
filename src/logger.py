@@ -112,14 +112,11 @@ class Logger:
         print('Discriminator Loss: {:.4f}, Generator Loss: {:.4f}'.format(d_error, g_error))
         print('D(x): {:.4f}, D(G(z)): {:.4f}'.format(d_pred_real.mean(), d_pred_fake.mean()))
 
-    def save_models(self, generator, discriminator):
+    def save_models(self, generator):
         out_dir = './results/models/{}'.format(self.data_subdir)
         Logger._make_dir(out_dir)
-
         torch.save(generator.state_dict(),
                    '{}/generator.pt'.format(out_dir))
-        torch.save(discriminator.state_dict(),
-                   '{}/discriminator.pt'.format(out_dir))
 
     def close(self):
         self.writer.close()
