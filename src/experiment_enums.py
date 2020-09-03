@@ -7,21 +7,85 @@ from experiment import Experiment
 
 class ExperimentEnums(Enum):
 
-    MNIST5Shap = {
+    MNIST100Lime = {
         "explainable": True,
         "explanationType": "lime",
         "generator": GeneratorNet,
         "discriminator": DiscriminatorNet,
         "dataset": "mnist",
         "batchSize": 100,
-        "percentage": 0.05,
+        "percentage": 1,
         "g_optim": optim.Adam,
         "d_optim": optim.Adam,
         "glr": 0.0002,
         "dlr": 0.0002,
         "loss": nn.BCELoss(),
-        "epochs": 4
+        "epochs": 2
     }
+
+    MNIST35Lime = {
+        "explainable": True,
+        "explanationType": "lime",
+        "generator": GeneratorNet,
+        "discriminator": DiscriminatorNet,
+        "dataset": "mnist",
+        "batchSize": 100,
+        "percentage": 0.35,
+        "g_optim": optim.Adam,
+        "d_optim": optim.Adam,
+        "glr": 0.0002,
+        "dlr": 0.0002,
+        "loss": nn.BCELoss(),
+        "epochs": 50
+    }
+
+    FMNIST100Lime = {
+        "explainable": True,
+        "explanationType": "lime",
+        "generator": GeneratorNet,
+        "discriminator": DiscriminatorNet,
+        "dataset": "fmnist",
+        "batchSize": 100,
+        "percentage": 1,
+        "g_optim": optim.Adam,
+        "d_optim": optim.Adam,
+        "glr": 0.0002,
+        "dlr": 0.0002,
+        "loss": nn.BCELoss(),
+        "epochs": 50
+    }
+
+    FMNIST35Lime = {
+        "explainable": True,
+        "explanationType": "lime",
+        "generator": GeneratorNet,
+        "discriminator": DiscriminatorNet,
+        "dataset": "fmnist",
+        "batchSize": 100,
+        "percentage": 0.35,
+        "g_optim": optim.Adam,
+        "d_optim": optim.Adam,
+        "glr": 0.0002,
+        "dlr": 0.0002,
+        "loss": nn.BCELoss(),
+        "epochs": 50
+    }
+
+    # MNIST5Shap = {
+    #     "explainable": True,
+    #     "explanationType": "shap",
+    #     "generator": GeneratorNet,
+    #     "discriminator": DiscriminatorNet,
+    #     "dataset": "mnist",
+    #     "batchSize": 100,
+    #     "percentage": 0.05,
+    #     "g_optim": optim.Adam,
+    #     "d_optim": optim.Adam,
+    #     "glr": 0.0002,
+    #     "dlr": 0.0002,
+    #     "loss": nn.BCELoss(),
+    #     "epochs": 50
+    # }
 
     # MNIST100Input = {
     #     "explainable": True,
