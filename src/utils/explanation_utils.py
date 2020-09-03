@@ -14,28 +14,19 @@ Authors:
 
 import numpy as np
 import torch
-from captum.attr import DeepLiftShap, Saliency, Deconvolution, FeaturePermutation
-from src.utils.vector_utils import vectors_to_images
-
+from captum.attr import DeepLiftShap, Saliency, InputXGradient, FeaturePermutation
 
 # defining global variables
-values = None
+global values
 
 
 def get_explanation(generated_data, discriminator, prediction, XAItype="shap", cuda=True, trained_data=None) -> None:
-    """
-    This function calls the shap module, computes the mask and sets new gradient values
-    :param background_selector: background selector that gives background data
-    :param fake_data: the data to predict
-    :param predictor: the classifier model
-    :return:
-    """
     # initialize temp values to all 1s
     temp = torch.ones(size=generated_data.size())
 
     # mask values with low prediction
     mask = (prediction < 0.5).squeeze()
-    indices = (mask.nonzero()).cpu().numpy().flatten().tolist()
+    indices = (mask.nonzero(as_tuple=False)).cpu().numpy().flatten().tolist()
 
     data = generated_data[mask, :]
 
@@ -50,9 +41,9 @@ def get_explanation(generated_data, discriminator, prediction, XAItype="shap", c
                 explainer = DeepLiftShap(discriminator)
                 temp[indices[i], :] = explainer.attribute(data[i, :].detach().unsqueeze(0), trained_data, target=0)
 
-        elif XAItype == "deconv":
+        elif XAItype == "inputXGradient":
             for i in range(len(indices)):
-                explainer = Deconvolution(discriminator)
+                explainer = InputXGradient(discriminator)
                 temp[indices[i], :] = explainer.attribute(data[i, :].detach())
 
         elif XAItype == "perturb":

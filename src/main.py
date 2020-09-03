@@ -5,20 +5,13 @@ Date:
     August 15, 2020
 
 Project:
-    XAIGAN
+    XAI-GAN
 
-Authors:
-    name: Vineel Nagisetty, Laura Graves, Joseph Scott, Vijay Ganesh
-    contact: vineel.nagisetty@uwaterloo.ca
+Contact:
+    explainable.gan@gmail.com
 """
 
-# imports
-
 import argparse
-import sys
-import torch
-[sys.path.append(i) for i in ['.', '..']]
-
 from src.experiment_enums import experimentsAll
 
 
@@ -27,7 +20,7 @@ def main():
     The main function that parses arguments
     :return:
     """
-    parser = argparse.ArgumentParser(description="run the experiment using regular and logic GANs")
+    parser = argparse.ArgumentParser(description="run explainable gan experiment using the provided experiment enums.")
     args = parser.parse_args()
     experiment_setup(args)
 
@@ -38,7 +31,6 @@ def experiment_setup(args: argparse.Namespace) -> None:
     :param args: dictionary arguments from user
     :return: None
     """
-    torch.backends.cudnn.benchmark = True
     experiments = experimentsAll
     for experiment in experiments:
         experiment.run(logging_frequency=1)

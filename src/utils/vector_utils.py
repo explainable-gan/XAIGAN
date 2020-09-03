@@ -72,9 +72,3 @@ def zeros_target(size: int, cuda: False) -> Variable:
     if cuda:
         result = result.cuda()
     return result
-
-
-def normal_init(m, mean, std):
-    if isinstance(m, torch.nn.ConvTranspose2d) or isinstance(m, torch.nn.Conv2d):
-        m.weight.data.normal_(mean, std)
-        m.bias.data.zero_()

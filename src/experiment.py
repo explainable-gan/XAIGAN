@@ -2,14 +2,13 @@
 This file contains the experiment method which runs the experiments
 
 Date:
-    November 6, 2019
+    August 15, 2020
 
 Project:
     XAI-GAN
 
-Authors:
-    name: Vineel Nagisetty, Laura Graves, Joseph Scott, Vijay Ganesh
-    contact: vineel.nagisetty@uwaterloo.ca
+Contact:
+    explainable.gan@gmail.com
 """
 
 from src.get_data import get_loader
@@ -34,6 +33,7 @@ class Experiment:
         self.loss = self.type["loss"]
         self.epochs = self.type["epochs"]
         self.cuda = True if torch.cuda.is_available() else False
+        torch.backends.cudnn.benchmark = True
 
     def run(self, logging_frequency=4) -> (list, list):
 
@@ -92,7 +92,8 @@ class Experiment:
                     fake_data = fake_data.cuda()
 
                 # Train G
-                g_error = self._train_generator(fake_data=fake_data, local_explainable=local_explainable, trained_data=trained_data)
+                g_error = self._train_generator(fake_data=fake_data, local_explainable=local_explainable,
+                                                trained_data=trained_data)
 
                 # Save Losses for plotting later
                 G_losses.append(g_error.item())
@@ -129,7 +130,8 @@ class Experiment:
         prediction = self.discriminator(fake_data).squeeze()
 
         if local_explainable:
-            get_explanation(generated_data=fake_data, discriminator=self.discriminator, prediction=prediction, XAItype=self.explanationType, cuda=self.cuda, trained_data=trained_data)
+            get_explanation(generated_data=fake_data, discriminator=self.discriminator, prediction=prediction,
+                            XAItype=self.explanationType, cuda=self.cuda, trained_data=trained_data)
 
         # Calculate error and back-propagate
         error = self.loss(prediction, zeros_target(N, self.cuda))
