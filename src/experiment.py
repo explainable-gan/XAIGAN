@@ -18,6 +18,7 @@ from utils.explanation_utils import explanation_hook, get_explanation
 from torch.autograd import Variable
 from torch import nn
 import torch
+import time
 
 
 class Experiment:
@@ -36,6 +37,10 @@ class Experiment:
         torch.backends.cudnn.benchmark = True
 
     def run(self, logging_frequency=4) -> (list, list):
+
+        start_time = time.time()
+
+        explanationSwitch = (self.epochs+1)/2 if self.epochs % 2 == 1 else self.epochs/2
 
         logger = Logger(self.name, samples=16)
         test_noise = noise(logger.samples, self.cuda)
@@ -63,7 +68,8 @@ class Experiment:
         # Start training
         for epoch in range(1, self.epochs + 1):
 
-            if self.explainable and self.epochs / epoch == 2:
+            if self.explainable and (epoch - 1) == explanationSwitch:
+                print(f'on: {epoch}')
                 self.generator.out.register_backward_hook(explanation_hook)
                 local_explainable = True
 
@@ -102,8 +108,8 @@ class Experiment:
                 logger.log(d_error, g_error, epoch, n_batch, num_batches)
 
                 if n_batch % (num_batches // logging_frequency) == 0:
-                    test_images = vectors_to_images(self.generator(test_noise)).cpu().data
-                    logger.log_images(test_images, epoch, n_batch, num_batches)
+                    # test_images = vectors_to_images(self.generator(test_noise)).cpu().data
+                    # logger.log_images(test_images, epoch, n_batch, num_batches)
 
                     # Display status Logs
                     logger.display_status(
@@ -113,6 +119,7 @@ class Experiment:
 
         logger.save_models(generator=self.generator)
         logger.save_errors(g_loss=G_losses, d_loss=D_losses)
+        logger.save_time(time.time() - start_time)
         return
 
     def _train_generator(self, fake_data: torch.Tensor, local_explainable, trained_data=None) -> torch.Tensor:

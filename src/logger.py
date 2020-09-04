@@ -30,11 +30,11 @@ class Logger:
         """
         self.model_name = experiment_name
         self.samples = samples
-        self.comment = f'{experiment_name}'
-        self.data_subdir = f'{experiment_name}/{str(date.today())}'
+        self.data_subdir = f'./results/{experiment_name}'
+        Logger._make_dir(self.data_subdir)
 
         # TensorBoard
-        self.writer = SummaryWriter(comment=self.comment)
+        self.writer = SummaryWriter(comment=self.data_subdir)
 
     def log(self, d_error, g_error, epoch, n_batch, num_batches):
         if isinstance(d_error, torch.autograd.Variable):
@@ -44,20 +44,18 @@ class Logger:
 
         step = Logger._step(epoch, n_batch, num_batches)
         self.writer.add_scalar(
-            '{}/D_error'.format(self.comment), d_error, step)
+            '{}/D_error'.format(self.data_subdir), d_error, step)
         self.writer.add_scalar(
-            '{}/G_error'.format(self.comment), g_error, step)
+            '{}/G_error'.format(self.data_subdir), g_error, step)
 
     def save_errors(self, g_loss, d_loss):
-        out_dir = f'./src/results/errors/{self.data_subdir}/'
-        Logger._make_dir(out_dir)
-        np.save(out_dir+"g_loss.npy", np.array(g_loss))
-        np.save(out_dir+"d_loss.npy", np.array(d_loss))
+        np.save(self.data_subdir + "/g_loss.npy", np.array(g_loss))
+        np.save(self.data_subdir + "/d_loss.npy", np.array(d_loss))
 
         plt.plot(g_loss, color="blue", label="generator")
         plt.plot(d_loss, color="orange", label="discriminator")
         plt.legend()
-        plt.savefig(out_dir+"plotLoss.png")
+        plt.savefig(self.data_subdir + "/plotLoss.png")
 
     def log_images(self, images, epoch, n_batch, num_batches, format='NCHW', normalize=True):
         '''
@@ -70,7 +68,7 @@ class Logger:
             images = images.transpose(1, 3)
 
         step = Logger._step(epoch, n_batch, num_batches)
-        img_name = '{}/images{}'.format(self.comment, '')
+        img_name = '{}/images{}'.format(self.data_subdir, '')
 
         # Make horizontal grid from image tensor
         horizontal_grid = vutils.make_grid(
@@ -83,14 +81,11 @@ class Logger:
         self.save_torch_images(horizontal_grid, epoch, n_batch)
 
     def save_torch_images(self, horizontal_grid, epoch, n_batch):
-        out_dir = f'./results/images/{self.data_subdir}'
-        Logger._make_dir(out_dir)
-
         # Plot and save horizontal
         fig = plt.figure(figsize=(16, 16))
         plt.imshow(np.moveaxis(horizontal_grid.numpy(), 0, -1))
         plt.axis('off')
-        fig.savefig('{}/epoch_{}_batch_{}.png'.format(out_dir, epoch, n_batch))
+        fig.savefig('{}/epoch_{}_batch_{}.png'.format(self.data_subdir, epoch, n_batch))
         plt.close()
 
     @staticmethod
@@ -113,10 +108,7 @@ class Logger:
         print('D(x): {:.4f}, D(G(z)): {:.4f}'.format(d_pred_real.mean(), d_pred_fake.mean()))
 
     def save_models(self, generator):
-        out_dir = './results/models/{}'.format(self.data_subdir)
-        Logger._make_dir(out_dir)
-        torch.save(generator.state_dict(),
-                   '{}/generator.pt'.format(out_dir))
+        torch.save(generator.state_dict(), f'{self.data_subdir}/generator.pt')
 
     def close(self):
         self.writer.close()
@@ -133,3 +125,7 @@ class Logger:
         except OSError as e:
             if e.errno != errno.EEXIST:
                 raise
+
+    def save_time(self, time):
+        with open(f'{self.data_subdir}/time.txt', 'w') as file:
+            file.write(f'time taken: {round(time, 4)}')
