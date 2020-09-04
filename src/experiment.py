@@ -13,6 +13,7 @@ Contact:
 
 from get_data import get_loader
 from utils.vector_utils import noise, ones_target, zeros_target, images_to_vectors, vectors_to_images
+from evaluation.evaluate_generator import calculate_metrics
 from logger import Logger
 from utils.explanation_utils import explanation_hook, get_explanation
 from torch.autograd import Variable
@@ -119,7 +120,10 @@ class Experiment:
 
         logger.save_models(generator=self.generator)
         logger.save_errors(g_loss=G_losses, d_loss=D_losses)
-        logger.save_time(time.time() - start_time)
+        fid, kid = calculate_metrics(path=f'{logger.data_subdir}/generator.pt', numberOfSamples=10000,
+                                     datasetType=self.type["dataset"])
+        timeTaken = time.time() - start_time
+        logger.save_scores(timeTaken, fid[0][0], fid[0][1], kid[0][0], kid[0][1])
         return
 
     def _train_generator(self, fake_data: torch.Tensor, local_explainable, trained_data=None) -> torch.Tensor:

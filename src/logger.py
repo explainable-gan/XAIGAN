@@ -15,7 +15,6 @@ from tensorboardX import SummaryWriter
 from matplotlib import pyplot as plt
 import numpy as np
 import torchvision.utils as vutils
-from datetime import date
 
 
 class Logger:
@@ -126,6 +125,8 @@ class Logger:
             if e.errno != errno.EEXIST:
                 raise
 
-    def save_time(self, time):
-        with open(f'{self.data_subdir}/time.txt', 'w') as file:
-            file.write(f'time taken: {round(time, 4)}')
+    def save_scores(self, time, fid_mean, fid_std, kid_mean, kid_std):
+        with open(f'{self.data_subdir}/results.txt', 'w') as file:
+            file.write(f'time taken: {round(time, 4)}\n')
+            file.write(f'fid score. mean: {round(fid_mean, 4)}, std: {round(fid_std, 4)}\n')
+            file.write(f'kid score. mean: {round(kid_mean, 4)}, std: {round(kid_std, 4)}\n')

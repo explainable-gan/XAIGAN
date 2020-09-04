@@ -46,8 +46,8 @@ except ImportError:
     # If not tqdm is not available, provide a mock version of it
     def tqdm(x): return x
 #from models import lenet
-from metrics.models.inception import InceptionV3
-from metrics.models.lenet import LeNet5
+from .models.inception import InceptionV3
+from .models.lenet import LeNet5
 
 
 def get_activations(files, model, batch_size=50, dims=2048,
@@ -208,7 +208,6 @@ def extract_lenet_features(imgs, net):
     imgs = imgs.reshape([-1, 100] + list(imgs.shape[1:]))
     if imgs[0].min() < -0.001:
       imgs = (imgs + 1)/2.0
-    print(imgs.shape, imgs.min(), imgs.max())
     imgs = torch.from_numpy(imgs)
     for i, images in enumerate(imgs):
         feats.append(net.extract_features(images).detach().cpu().numpy())
@@ -254,7 +253,7 @@ def calculate_fid_given_paths(paths, cuda=False, dims=2048, bootstrap=True, n_bo
         model = InceptionV3([block_idx])
     elif model_type == 'lenet':
         model = LeNet5()
-        model.load_state_dict(torch.load('./metrics/models/lenet.pth'))
+        model.load_state_dict(torch.load(f'{os.getcwd()}/evaluation/metrics/models/lenet.pth'))
     if cuda:
        model.cuda()
 
@@ -263,7 +262,6 @@ def calculate_fid_given_paths(paths, cuda=False, dims=2048, bootstrap=True, n_bo
     pths = pths[1:]
     results = []
     for j, pth in enumerate(pths):
-        print(paths[j+1])
         actj = _compute_activations(pth, model, batch_size, dims, cuda, model_type)
         fid_values = np.zeros((n_bootstraps))
         with tqdm(range(n_bootstraps), desc='FID') as bar:
@@ -274,7 +272,7 @@ def calculate_fid_given_paths(paths, cuda=False, dims=2048, bootstrap=True, n_bo
                 m2, s2 = calculate_activation_statistics(act2_bs)
                 fid_values[i] = calculate_frechet_distance(m1, s1, m2, s2)
                 bar.set_postfix({'mean': fid_values[:i+1].mean()})
-        results.append((paths[j+1], fid_values.mean(), fid_values.std()))
+        results.append((fid_values.mean(), fid_values.std()))
     return results
 
 

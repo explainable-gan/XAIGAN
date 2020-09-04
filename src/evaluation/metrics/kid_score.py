@@ -18,8 +18,8 @@ except ImportError:
     # If not tqdm is not available, provide a mock version of it
     def tqdm(x): return x
 
-from metrics.models.inception import InceptionV3
-from metrics.models.lenet import LeNet5
+from .models.inception import InceptionV3
+from .models.lenet import LeNet5
 
 
 def get_activations(files, model, batch_size=50, dims=2048, verbose=False):
@@ -97,7 +97,6 @@ def extract_lenet_features(imgs, net):
     imgs = imgs.reshape([-1, 100] + list(imgs.shape[1:]))
     if imgs[0].min() < -0.001:
       imgs = (imgs + 1)/2.0
-    print(imgs.shape, imgs.min(), imgs.max())
     imgs = torch.from_numpy(imgs)
     for i, images in enumerate(imgs):
         feats.append(net.extract_features(images).detach().numpy())
@@ -140,17 +139,17 @@ def calculate_kid_given_paths(paths, batch_size=50, dims=2048, model_type='lenet
         model = InceptionV3([block_idx])
     elif model_type == 'lenet':
         model = LeNet5()
-        model.load_state_dict(torch.load('./metrics/models/lenet.pth'))
+        model.load_state_dict(torch.load(f'{os.getcwd()}/evaluation/metrics/models/lenet.pth'))
 
     act_true = _compute_activations(pths[0], model, batch_size, dims, model_type)
     pths = pths[1:]
     results = []
     for j, pth in enumerate(pths):
-        print(paths[j+1])
         actj = _compute_activations(pth, model, batch_size, dims, model_type)
         kid_values = polynomial_mmd_averages(act_true, actj, n_subsets=100)
-        results.append((paths[j+1], kid_values[0].mean(), kid_values[0].std()))
+        results.append((kid_values[0].mean(), kid_values[0].std()))
     return results
+
 
 def _sqn(arr):
     flat = np.ravel(arr)
