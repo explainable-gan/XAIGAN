@@ -39,20 +39,20 @@ class ExperimentEnums(Enum):
     #     "epochs": 50
     # }
 
-    Demo = {
+    FMNIST5Normal = {
         "explainable": False,
         "explanationType": None,
         "generator": GeneratorNet,
         "discriminator": DiscriminatorNet,
-        "dataset": "mnist",
+        "dataset": "fmnist",
         "batchSize": 100,
-        "percentage": 0.01,
+        "percentage": 0.05,
         "g_optim": optim.Adam,
         "d_optim": optim.Adam,
         "glr": 0.0002,
         "dlr": 0.0002,
         "loss": nn.BCELoss(),
-        "epochs": 2
+        "epochs": 50
     }
 
     # MNIST100Lime = {
