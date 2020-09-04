@@ -7,12 +7,12 @@ from experiment import Experiment
 
 class ExperimentEnums(Enum):
 
-    MNIST50Normal = {
+    FMNIST50Normal = {
         "explainable": False,
         "explanationType": None,
         "generator": GeneratorNet,
         "discriminator": DiscriminatorNet,
-        "dataset": "mnist",
+        "dataset": "fmnist",
         "batchSize": 100,
         "percentage": 0.5,
         "g_optim": optim.Adam,
@@ -23,12 +23,12 @@ class ExperimentEnums(Enum):
         "epochs": 50
     }
 
-    MNIST10Normal = {
+    FMNIST10Normal = {
         "explainable": False,
         "explanationType": None,
         "generator": GeneratorNet,
         "discriminator": DiscriminatorNet,
-        "dataset": "mnist",
+        "dataset": "fmnist",
         "batchSize": 100,
         "percentage": 0.1,
         "g_optim": optim.Adam,
