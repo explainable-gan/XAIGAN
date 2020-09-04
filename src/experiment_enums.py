@@ -7,53 +7,53 @@ from experiment import Experiment
 
 class ExperimentEnums(Enum):
 
-    FMNIST50Normal = {
-        "explainable": False,
-        "explanationType": None,
-        "generator": GeneratorNet,
-        "discriminator": DiscriminatorNet,
-        "dataset": "fmnist",
-        "batchSize": 100,
-        "percentage": 0.5,
-        "g_optim": optim.Adam,
-        "d_optim": optim.Adam,
-        "glr": 0.0002,
-        "dlr": 0.0002,
-        "loss": nn.BCELoss(),
-        "epochs": 50
-    }
-
-    FMNIST10Normal = {
-        "explainable": False,
-        "explanationType": None,
-        "generator": GeneratorNet,
-        "discriminator": DiscriminatorNet,
-        "dataset": "fmnist",
-        "batchSize": 100,
-        "percentage": 0.1,
-        "g_optim": optim.Adam,
-        "d_optim": optim.Adam,
-        "glr": 0.0002,
-        "dlr": 0.0002,
-        "loss": nn.BCELoss(),
-        "epochs": 50
-    }
-
-    # Demo = {
-    #     "explainable": True,
-    #     "explanationType": "inputXGradient",
+    # FMNIST50Normal = {
+    #     "explainable": False,
+    #     "explanationType": None,
     #     "generator": GeneratorNet,
     #     "discriminator": DiscriminatorNet,
-    #     "dataset": "mnist",
+    #     "dataset": "fmnist",
     #     "batchSize": 100,
-    #     "percentage": 0.01,
+    #     "percentage": 0.5,
     #     "g_optim": optim.Adam,
     #     "d_optim": optim.Adam,
     #     "glr": 0.0002,
     #     "dlr": 0.0002,
     #     "loss": nn.BCELoss(),
-    #     "epochs": 5
+    #     "epochs": 50
     # }
+    #
+    # FMNIST10Normal = {
+    #     "explainable": False,
+    #     "explanationType": None,
+    #     "generator": GeneratorNet,
+    #     "discriminator": DiscriminatorNet,
+    #     "dataset": "fmnist",
+    #     "batchSize": 100,
+    #     "percentage": 0.1,
+    #     "g_optim": optim.Adam,
+    #     "d_optim": optim.Adam,
+    #     "glr": 0.0002,
+    #     "dlr": 0.0002,
+    #     "loss": nn.BCELoss(),
+    #     "epochs": 50
+    # }
+
+    Demo = {
+        "explainable": False,
+        "explanationType": None,
+        "generator": GeneratorNet,
+        "discriminator": DiscriminatorNet,
+        "dataset": "mnist",
+        "batchSize": 100,
+        "percentage": 0.01,
+        "g_optim": optim.Adam,
+        "d_optim": optim.Adam,
+        "glr": 0.0002,
+        "dlr": 0.0002,
+        "loss": nn.BCELoss(),
+        "epochs": 2
+    }
 
     # MNIST100Lime = {
     #     "explainable": True,
