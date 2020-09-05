@@ -139,14 +139,14 @@ class Experiment:
 
         if self.type["dataset"] == "cifar":
             test_images = vectors_to_images_cifar(test_images).cpu().data
-            # fid = calculate_metrics_cifar(path=f'{logger.data_subdir}/generator.pt', numberOfSamples=2048)
+            fid = calculate_metrics_cifar(path=f'{logger.data_subdir}/generator.pt', numberOfSamples=2048)
         else:
             test_images = vectors_to_images(test_images).cpu().data
             fid = calculate_metrics(path=f'{logger.data_subdir}/generator.pt', numberOfSamples=10000,
                                     datasetType=self.type["dataset"])
 
         logger.log_images(test_images, self.epochs + 1, 0, num_batches)
-        logger.save_scores(timeTaken, 1)
+        logger.save_scores(timeTaken, fid)
         return
 
     def _train_generator(self, fake_data: torch.Tensor, local_explainable, trained_data=None) -> torch.Tensor:
