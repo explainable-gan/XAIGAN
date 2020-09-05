@@ -7,20 +7,36 @@ from experiment import Experiment
 
 class ExperimentEnums(Enum):
 
-    CIFAR100Normal = {
-        "explainable": False,
-        "explanationType": None,
+    DemoCIFAR = {
+        "explainable": True,
+        "explanationType": "lime",
         "generator": GeneratorNetCifar10,
         "discriminator": DiscriminatorNetCifar10,
         "dataset": "cifar",
-        "batchSize": 128,
-        "percentage": 1,
+        "batchSize": 28,
+        "percentage": 0.0001,
         "g_optim": optim.Adam,
         "d_optim": optim.Adam,
         "glr": 0.0002,
         "dlr": 0.0002,
         "loss": nn.BCELoss(),
-        "epochs": 100
+        "epochs": 2
+    }
+
+    DemoMNIST = {
+        "explainable": True,
+        "explanationType": "lime",
+        "generator": GeneratorNet,
+        "discriminator": DiscriminatorNet,
+        "dataset": "mnist",
+        "batchSize": 128,
+        "percentage": 0.01,
+        "g_optim": optim.Adam,
+        "d_optim": optim.Adam,
+        "glr": 0.0002,
+        "dlr": 0.0002,
+        "loss": nn.BCELoss(),
+        "epochs": 2
     }
 
     # MNIST100Normal = {
