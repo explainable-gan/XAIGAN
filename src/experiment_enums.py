@@ -7,12 +7,12 @@ from experiment import Experiment
 
 class ExperimentEnums(Enum):
 
-    MNIST100Normal = {
+    CIFAR100Normal = {
         "explainable": False,
         "explanationType": None,
-        "generator": GeneratorNet,
-        "discriminator": DiscriminatorNet,
-        "dataset": "mnist",
+        "generator": GeneratorNetCifar10,
+        "discriminator": DiscriminatorNetCifar10,
+        "dataset": "cifar",
         "batchSize": 128,
         "percentage": 1,
         "g_optim": optim.Adam,
@@ -20,40 +20,72 @@ class ExperimentEnums(Enum):
         "glr": 0.0002,
         "dlr": 0.0002,
         "loss": nn.BCELoss(),
-        "epochs": 50
+        "epochs": 300
     }
 
-    MNIST50Normal = {
-        "explainable": False,
-        "explanationType": None,
-        "generator": GeneratorNet,
-        "discriminator": DiscriminatorNet,
-        "dataset": "mnist",
-        "batchSize": 128,
-        "percentage": 0.5,
-        "g_optim": optim.Adam,
-        "d_optim": optim.Adam,
-        "glr": 0.0002,
-        "dlr": 0.0002,
-        "loss": nn.BCELoss(),
-        "epochs": 100
-    }
+    # CIFAR100Saliency = {
+    #     "explainable": False,
+    #     "explanationType": None,
+    #     "generator": GeneratorNetCifar10,
+    #     "discriminator": DiscriminatorNetCifar10,
+    #     "dataset": "mnist",
+    #     "batchSize": 128,
+    #     "percentage": 1,
+    #     "g_optim": optim.Adam,
+    #     "d_optim": optim.Adam,
+    #     "glr": 0.0002,
+    #     "dlr": 0.0002,
+    #     "loss": nn.BCELoss(),
+    #     "epochs": 1000
+    # }
 
-    MNIST5Normal = {
-        "explainable": False,
-        "explanationType": None,
-        "generator": GeneratorNet,
-        "discriminator": DiscriminatorNet,
-        "dataset": "mnist",
-        "batchSize": 128,
-        "percentage": 0.05,
-        "g_optim": optim.Adam,
-        "d_optim": optim.Adam,
-        "glr": 0.0002,
-        "dlr": 0.0002,
-        "loss": nn.BCELoss(),
-        "epochs": 1000
-    }
+    # MNIST100Normal = {
+    #     "explainable": False,
+    #     "explanationType": None,
+    #     "generator": GeneratorNet,
+    #     "discriminator": DiscriminatorNet,
+    #     "dataset": "mnist",
+    #     "batchSize": 128,
+    #     "percentage": 1,
+    #     "g_optim": optim.Adam,
+    #     "d_optim": optim.Adam,
+    #     "glr": 0.0002,
+    #     "dlr": 0.0002,
+    #     "loss": nn.BCELoss(),
+    #     "epochs": 50
+    # }
+    #
+    # MNIST50Normal = {
+    #     "explainable": False,
+    #     "explanationType": None,
+    #     "generator": GeneratorNet,
+    #     "discriminator": DiscriminatorNet,
+    #     "dataset": "mnist",
+    #     "batchSize": 128,
+    #     "percentage": 0.5,
+    #     "g_optim": optim.Adam,
+    #     "d_optim": optim.Adam,
+    #     "glr": 0.0002,
+    #     "dlr": 0.0002,
+    #     "loss": nn.BCELoss(),
+    #     "epochs": 100
+    # }
+    #
+    # MNIST5Normal = {
+    #     "explainable": False,
+    #     "explanationType": None,
+    #     "generator": GeneratorNet,
+    #     "discriminator": DiscriminatorNet,
+    #     "dataset": "mnist",
+    #     "batchSize": 128,
+    #     "percentage": 0.05,
+    #     "g_optim": optim.Adam,
+    #     "d_optim": optim.Adam,
+    #     "glr": 0.0002,
+    #     "dlr": 0.0002,
+    #     "loss": nn.BCELoss(),
+    #     "epochs": 1000
+    # }
 
     # CIFAR100Normal = {
     #     "explainable": False,
