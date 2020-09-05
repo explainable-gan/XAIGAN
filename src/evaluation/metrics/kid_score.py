@@ -64,16 +64,8 @@ def get_activations(files, model, batch_size=50, dims=2048, verbose=False):
             print('\rPropagating batch %d/%d' % (i + 1, n_batches), end='', flush=True)
         start = i * batch_size
         end = start + batch_size
-        if is_numpy:
-            images = np.copy(files[start:end]) + 1
-            images /= 2.
-        else:
-            images = np.array([imread(str(f)).astype(np.float32)
-                               for f in files[start:end]])
-            images /= 255.
-            # Reshape to (n_images, 3, height, width)
-            images = images.transpose((0, 3, 1, 2))
-
+        images = np.copy(files[start:end]) + 1
+        images /= 2.
         batch = torch.from_numpy(images).type(torch.FloatTensor)
 
         pred = model(batch)[0]

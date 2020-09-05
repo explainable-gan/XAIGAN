@@ -125,8 +125,7 @@ class Logger:
             if e.errno != errno.EEXIST:
                 raise
 
-    def save_scores(self, time, fid_mean, fid_std, kid_mean, kid_std):
+    def save_scores(self, time, fid):
         with open(f'{self.data_subdir}/results.txt', 'w') as file:
             file.write(f'time taken: {round(time, 4)}\n')
-            file.write(f'fid score. mean: {round(fid_mean, 4)}, std: {round(fid_std, 4)}\n')
-            file.write(f'kid score. mean: {round(kid_mean, 4)}, std: {round(kid_std, 4)}\n')
+            file.write(f'fid score: {round(fid, 4)}')

@@ -12,8 +12,10 @@ Contact:
 """
 
 from get_data import get_loader
-from utils.vector_utils import noise, ones_target, zeros_target, images_to_vectors, vectors_to_images
+from utils.vector_utils import noise, ones_target, zeros_target, images_to_vectors, vectors_to_images, \
+    vectors_to_images_cifar
 from evaluation.evaluate_generator import calculate_metrics
+from evaluation.evaluate_generator_cifar10 import calculate_metrics_cifar
 from logger import Logger
 from utils.explanation_utils import explanation_hook, get_explanation
 from torch.autograd import Variable
@@ -107,8 +109,12 @@ class Experiment:
                 logger.log(d_error, g_error, epoch, n_batch, num_batches)
 
                 if n_batch % (num_batches // logging_frequency) == 0:
-                    test_images = vectors_to_images(self.generator(test_noise)).cpu().data
-                    logger.log_images(test_images, epoch, n_batch, num_batches)
+                    # test_images = self.generator(test_noise)
+                    # if self.type["dataset"] == "cifar":
+                    #     test_images = vectors_to_images_cifar(test_images).cpu().data
+                    # else:
+                    #     test_images = vectors_to_images(test_images).cpu().data
+                    # logger.log_images(test_images, epoch, n_batch, num_batches)
 
                     # Display status Logs
                     logger.display_status(
@@ -118,10 +124,16 @@ class Experiment:
 
         logger.save_models(generator=self.generator)
         logger.save_errors(g_loss=G_losses, d_loss=D_losses)
-        fid, kid = calculate_metrics(path=f'{logger.data_subdir}/generator.pt', numberOfSamples=10000,
-                                     datasetType=self.type["dataset"])
         timeTaken = time.time() - start_time
-        logger.save_scores(timeTaken, fid[0][0], fid[0][1], kid[0][0], kid[0][1])
+        if self.type["dataset"] == "cifar":
+            fid = calculate_metrics_cifar(path=f'{logger.data_subdir}/generator.pt', numberOfSamples=10000)
+            test_images = self.generator(test_noise)
+            test_images = vectors_to_images_cifar(test_images).cpu().data
+            logger.log_images(test_images, self.epochs + 1, 0, num_batches)
+        else:
+            fid = calculate_metrics(path=f'{logger.data_subdir}/generator.pt', numberOfSamples=10000,
+                                         datasetType=self.type["dataset"])
+        logger.save_scores(timeTaken, fid)
         return
 
     def _train_generator(self, fake_data: torch.Tensor, local_explainable, trained_data=None) -> torch.Tensor:
