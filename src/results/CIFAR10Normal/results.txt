@@ -1,0 +1,2 @@
+time taken: 276.0294
+fid score: 223.1739
