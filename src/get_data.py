@@ -32,7 +32,7 @@ def mnist_data():
 def cifar10_data():
     compose = transforms.Compose([
         transforms.ToTensor(),
-        transforms.Normalize([.5, ], [.5, ])
+        transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
         ])
     out_dir = data_folder
     train_data = datasets.CIFAR10(root=out_dir, train=True, transform=compose, download=True)

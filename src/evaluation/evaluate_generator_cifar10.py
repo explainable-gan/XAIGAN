@@ -11,7 +11,7 @@ Contact:
     explainable.gan@gmail.com
 """
 
-from utils.vector_utils import noise
+from utils.vector_utils import noise_cifar
 import torch
 import argparse
 import numpy as np
@@ -33,14 +33,14 @@ def main():
     parser = argparse.ArgumentParser(description="calculate metrics given a path of saved generator")
     parser.add_argument("-f", "--file", default="./../results/CIFAR100Normal/generator.pt", help="path of the file")
     parser.add_argument("-n", "--number_of_samples",
-                        type=int, default=10000,
+                        type=int, default=2048,
                         help="number of samples to generate")
 
     args = parser.parse_args()
     calculate_metrics_cifar(path=args.file, numberOfSamples=args.number_of_samples)
 
 
-def calculate_metrics_cifar(path, numberOfSamples=10000):
+def calculate_metrics_cifar(path, numberOfSamples=2048):
     from fid import fid
     folder = f'{os.getcwd()}/tmp'
     if not os.path.exists(folder):
@@ -70,7 +70,7 @@ def generate_samples_cifar(number, path_model, path_output):
     generator = GeneratorNetCifar10()
     generator.load_state_dict(torch.load(path_model, map_location=lambda storage, loc: storage))
     for i in range(number):
-        sample = generator(noise(1, False)).detach().squeeze(0).numpy()
+        sample = generator(noise_cifar(1, False)).detach().squeeze(0).numpy()
         sample = np.transpose(sample, (1, 2, 0))
         sample = ((sample/2) + 0.5) * 255
         sample = sample.astype(np.uint8)

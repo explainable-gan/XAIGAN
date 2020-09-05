@@ -1,35 +1,25 @@
-"""
-This file is the util files needed for the experiments. Some functions from https://github.com/diegoalejogm/gans/
-
-Date:
-    November 6, 2019
-
-Project:
-    LogicGAN
-
-"""
 
 import numpy as np
-import torch
+from torch import Tensor, from_numpy, randn, full
+import torch.nn as nn
 from torch.autograd.variable import Variable
 
 
-# functions to reshape images
-def images_to_vectors(images: torch.Tensor) -> torch.Tensor:
+def images_to_vectors(images: Tensor) -> Tensor:
     """ converts (Nx28x28) tensor to (Nx784) torch tensor """
     return images.view(images.size(0), 32 * 32)
 
 
-def images_to_vectors_numpy(images: np.array) -> torch.Tensor:
+def images_to_vectors_numpy(images: np.array) -> Tensor:
     """ converts (Nx28x28) np array to (Nx784) torch tensor """
     images = images.reshape(images.shape[0], images.shape[1]*images.shape[2], images.shape[3])
-    return torch.from_numpy(images[:, :, 0])
+    return from_numpy(images[:, :, 0])
 
 
-def images_to_vectors_numpy_multiclass(images: np.array) -> torch.Tensor:
+def images_to_vectors_numpy_multiclass(images: np.array) -> Tensor:
     """ converts (Nx28x28) numpy array to (Nx784) tensor in multiclass setting"""
     images = images.reshape(images.shape[0], images.shape[2]*images.shape[3], images.shape[1])
-    return torch.from_numpy(images[:, :, 0])
+    return from_numpy(images[:, :, 0])
 
 
 def vectors_to_images_numpy(vectors: np.array) -> np.array:
@@ -49,31 +39,31 @@ def vectors_to_images_cifar(vectors):
 
 def noise(size: int, cuda: False) -> Variable:
     """ generates a 1-d vector of normal sampled random values of mean 0 and standard deviation 1 """
-    result = Variable(torch.randn(size, 100))
+    result = Variable(randn(size, 100))
     if cuda:
         result = result.cuda()
     return result
 
 
-def ones_target(size: int, cuda: False) -> Variable:
-    """ returns tensor filled with 1s of given size """
-    result = Variable(torch.ones(size))
+def noise_cifar(size: int, cuda: False) -> Variable:
+    result = Variable(randn(size, 100, 1, 1))
     if cuda:
         result = result.cuda()
     return result
 
 
-def values_target(size: tuple, value: int, cuda: False) -> Variable:
+def values_target(size: tuple, value: float, cuda: False) -> Variable:
     """ returns tensor filled with value of given size """
-    result = Variable(torch.full(size=size, fill_value=value))
+    result = Variable(full(size=size, fill_value=value))
     if cuda:
         result = result.cuda()
     return result
 
 
-def zeros_target(size: int, cuda: False) -> Variable:
-    """ returns tensor filled with 0s of given size """
-    result = Variable(torch.zeros(size))
-    if cuda:
-        result = result.cuda()
-    return result
+def weights_init(m):
+    classname = m.__class__.__name__
+    if classname.find('Conv') != -1:
+        nn.init.normal_(m.weight.data, 0.0, 0.02)
+    elif classname.find('BatchNorm') != -1:
+        nn.init.normal_(m.weight.data, 1.0, 0.02)
+        nn.init.constant_(m.bias.data, 0)

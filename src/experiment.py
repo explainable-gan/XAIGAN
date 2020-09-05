@@ -12,12 +12,12 @@ Contact:
 """
 
 from get_data import get_loader
-from utils.vector_utils import noise, ones_target, zeros_target, images_to_vectors, vectors_to_images, \
-    vectors_to_images_cifar
+from utils.vector_utils import noise, values_target, images_to_vectors, vectors_to_images, vectors_to_images_cifar, \
+    noise_cifar, weights_init
 from evaluation.evaluate_generator import calculate_metrics
 from evaluation.evaluate_generator_cifar10 import calculate_metrics_cifar
 from logger import Logger
-from utils.explanation_utils import explanation_hook, get_explanation
+from utils.explanation_utils import explanation_hook, get_explanation, explanation_hook_cifar
 from torch.autograd import Variable
 from torch import nn
 import torch
@@ -37,6 +37,8 @@ class Experiment:
         self.loss = self.type["loss"]
         self.epochs = self.type["epochs"]
         self.cuda = True if torch.cuda.is_available() else False
+        self.real_label = 0.9
+        self.fake_label = 0.1
         torch.backends.cudnn.benchmark = True
 
     def run(self, logging_frequency=4) -> (list, list):
@@ -46,7 +48,13 @@ class Experiment:
         explanationSwitch = (self.epochs+1)/2 if self.epochs % 2 == 1 else self.epochs/2
 
         logger = Logger(self.name, samples=16)
-        test_noise = noise(logger.samples, self.cuda)
+
+        if self.type["dataset"] == "cifar":
+            test_noise = noise_cifar(logger.samples, self.cuda)
+            self.generator.apply(weights_init)
+            self.discriminator.apply(weights_init)
+        else:
+            test_noise = noise(logger.samples, self.cuda)
 
         loader = get_loader(self.type["batchSize"], self.type["percentage"], self.type["dataset"])
         num_batches = len(loader)
@@ -57,7 +65,7 @@ class Experiment:
             self.loss = self.loss.cuda()
 
         if self.explainable:
-            trained_data = Variable(images_to_vectors(next(iter(loader))[0]))
+            trained_data = Variable(next(iter(loader))[0])
             if self.cuda:
                 trained_data = trained_data.cuda()
         else:
@@ -68,12 +76,15 @@ class Experiment:
         D_losses = []
 
         local_explainable = False
+
         # Start training
         for epoch in range(1, self.epochs + 1):
 
             if self.explainable and (epoch - 1) == explanationSwitch:
-                print(f'on: {epoch}')
-                self.generator.out.register_backward_hook(explanation_hook)
+                if self.type["dataset"] == "cifar":
+                    self.generator.out.register_backward_hook(explanation_hook_cifar)
+                else:
+                    self.generator.out.register_backward_hook(explanation_hook)
                 local_explainable = True
 
             for n_batch, (real_batch, _) in enumerate(loader):
@@ -82,7 +93,10 @@ class Experiment:
 
                 # 1. Train Discriminator
                 # Generate fake data and detach (so gradients are not calculated for generator)
-                fake_data = self.generator(noise(N, self.cuda)).detach()
+                if self.type["dataset"] == "cifar":
+                    fake_data = self.generator(noise_cifar(N, self.cuda)).detach()
+                else:
+                    fake_data = self.generator(noise(N, self.cuda)).detach()
 
                 if self.cuda:
                     real_batch = real_batch.cuda()
@@ -93,7 +107,10 @@ class Experiment:
 
                 # 2. Train Generator
                 # Generate fake data
-                fake_data = self.generator(noise(N, self.cuda))
+                if self.type["dataset"] == "cifar":
+                    fake_data = self.generator(noise_cifar(N, self.cuda))
+                else:
+                    fake_data = self.generator(noise(N, self.cuda))
 
                 if self.cuda:
                     fake_data = fake_data.cuda()
@@ -108,15 +125,8 @@ class Experiment:
 
                 logger.log(d_error, g_error, epoch, n_batch, num_batches)
 
+                # Display status Logs
                 if n_batch % (num_batches // logging_frequency) == 0:
-                    # test_images = self.generator(test_noise)
-                    # if self.type["dataset"] == "cifar":
-                    #     test_images = vectors_to_images_cifar(test_images).cpu().data
-                    # else:
-                    #     test_images = vectors_to_images(test_images).cpu().data
-                    # logger.log_images(test_images, epoch, n_batch, num_batches)
-
-                    # Display status Logs
                     logger.display_status(
                         epoch, self.epochs, n_batch, num_batches,
                         d_error, g_error, d_pred_real, d_pred_fake
@@ -125,15 +135,18 @@ class Experiment:
         logger.save_models(generator=self.generator)
         logger.save_errors(g_loss=G_losses, d_loss=D_losses)
         timeTaken = time.time() - start_time
+        test_images = self.generator(test_noise)
+
         if self.type["dataset"] == "cifar":
-            fid = calculate_metrics_cifar(path=f'{logger.data_subdir}/generator.pt', numberOfSamples=10000)
-            test_images = self.generator(test_noise)
             test_images = vectors_to_images_cifar(test_images).cpu().data
-            logger.log_images(test_images, self.epochs + 1, 0, num_batches)
+            # fid = calculate_metrics_cifar(path=f'{logger.data_subdir}/generator.pt', numberOfSamples=2048)
         else:
+            test_images = vectors_to_images(test_images).cpu().data
             fid = calculate_metrics(path=f'{logger.data_subdir}/generator.pt', numberOfSamples=10000,
-                                         datasetType=self.type["dataset"])
-        logger.save_scores(timeTaken, fid)
+                                    datasetType=self.type["dataset"])
+
+        logger.log_images(test_images, self.epochs + 1, 0, num_batches)
+        logger.save_scores(timeTaken, 1)
         return
 
     def _train_generator(self, fake_data: torch.Tensor, local_explainable, trained_data=None) -> torch.Tensor:
@@ -148,14 +161,15 @@ class Experiment:
         self.g_optim.zero_grad()
 
         # Sample noise and generate fake data
-        prediction = self.discriminator(fake_data).squeeze()
+        prediction = self.discriminator(fake_data).view(-1)
 
         if local_explainable:
             get_explanation(generated_data=fake_data, discriminator=self.discriminator, prediction=prediction,
-                            XAItype=self.explanationType, cuda=self.cuda, trained_data=trained_data)
+                            XAItype=self.explanationType, cuda=self.cuda, trained_data=trained_data,
+                            data_type=self.type["dataset"])
 
         # Calculate error and back-propagate
-        error = self.loss(prediction, zeros_target(N, self.cuda))
+        error = self.loss(prediction, values_target(size=(N, ), value=self.real_label, cuda=self.cuda))
 
         error.backward()
 
@@ -184,16 +198,16 @@ class Experiment:
         self.d_optim.zero_grad()
 
         # 1.1 Train on Real Data
-        prediction_real = self.discriminator(real_data).squeeze()
+        prediction_real = self.discriminator(real_data).view(-1)
 
         # Calculate error
-        error_real = self.loss(prediction_real, zeros_target(N, self.cuda))
+        error_real = self.loss(prediction_real, values_target(size=(N, ), value=self.real_label, cuda=self.cuda))
 
         # 1.2 Train on Fake Data
-        prediction_fake = self.discriminator(fake_data).squeeze()
+        prediction_fake = self.discriminator(fake_data).view(-1)
 
         # Calculate error
-        error_fake = self.loss(prediction_fake, ones_target(N, self.cuda))
+        error_fake = self.loss(prediction_fake, values_target(size=(N, ), value=self.fake_label, cuda=self.cuda))
 
         # Sum up error and backpropagate
         error = error_real + error_fake

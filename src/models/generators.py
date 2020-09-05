@@ -11,12 +11,13 @@ Authors:
     name: Vineel Nagisetty, Laura Graves, Joseph Scott, Vijay Ganesh
     contact: vineel.nagisetty@uwaterloo.ca
 """
+from abc import ABC
 
 from torch import nn, Tensor
 import numpy as np
 
 
-class GeneratorNet(nn.Module):
+class GeneratorNet(nn.Module, ABC):
     """
     A three hidden-layer generative neural network
     """
@@ -53,40 +54,33 @@ class GeneratorNet(nn.Module):
         return x
 
 
-class GeneratorNetCifar10(nn.Module):
-
+class GeneratorNetCifar10(nn.Module, ABC):
     def __init__(self):
         super(GeneratorNetCifar10, self).__init__()
         self.n_features = 100
         self.n_out = (3, 32, 32)
+        nc, nz, ngf = 3, 100, 64
 
         self.input_layer = nn.Sequential(
-            nn.Linear(self.n_features, 128, bias=True),
-            nn.LeakyReLU(0.2, inplace=True),
+            nn.ConvTranspose2d(nz, ngf * 8, 4, 1, 0, bias=False),
+            nn.BatchNorm2d(ngf * 8),
+            nn.ReLU(True),
         )
 
         self.hidden1 = nn.Sequential(
-            nn.Linear(128, 256, bias=True),
-            nn.LeakyReLU(0.2, inplace=True),
+            nn.ConvTranspose2d(ngf * 8, ngf * 4, 4, 2, 1, bias=False),
+            nn.BatchNorm2d(ngf * 4),
+            nn.ReLU(True),
         )
 
         self.hidden2 = nn.Sequential(
-            nn.Linear(256, 512, bias=True),
-            nn.LeakyReLU(0.2, inplace=True),
-        )
-
-        self.hidden3 = nn.Sequential(
-            nn.Linear(512, 1024, bias=True),
-            nn.LeakyReLU(0.2, inplace=True),
-        )
-
-        self.hidden4 = nn.Sequential(
-            nn.Linear(1024, 2048, bias=True),
-            nn.LeakyReLU(0.2, inplace=True),
+            nn.ConvTranspose2d( ngf * 4, ngf * 2, 4, 2, 1, bias=False),
+            nn.BatchNorm2d(ngf * 2),
+            nn.ReLU(True),
         )
 
         self.out = nn.Sequential(
-            nn.Linear(2048, int(np.prod(self.n_out))),
+            nn.ConvTranspose2d(ngf * 2, nc, 4, 2, 1, bias=False),
             nn.Tanh()
         )
 
@@ -94,8 +88,5 @@ class GeneratorNetCifar10(nn.Module):
         x = self.input_layer(x)
         x = self.hidden1(x)
         x = self.hidden2(x)
-        x = self.hidden3(x)
-        x = self.hidden4(x)
         x = self.out(x)
-        x = x.view(x.size(0), *self.n_out)
         return x
