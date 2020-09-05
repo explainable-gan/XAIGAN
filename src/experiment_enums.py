@@ -7,11 +7,11 @@ from experiment import Experiment
 
 class ExperimentEnums(Enum):
 
-    CIFAR100Normal = {
+    MNIST100Normal = {
         "explainable": False,
         "explanationType": None,
-        "generator": GeneratorNetCifar10,
-        "discriminator": DiscriminatorNetCifar10,
+        "generator": GeneratorNet,
+        "discriminator": DiscriminatorNet,
         "dataset": "cifar",
         "batchSize": 128,
         "percentage": 1,
@@ -20,14 +20,14 @@ class ExperimentEnums(Enum):
         "glr": 0.0002,
         "dlr": 0.0002,
         "loss": nn.BCELoss(),
-        "epochs": 30
+        "epochs": 50
     }
 
-    CIFAR50Normal = {
+    MNIST50Normal = {
         "explainable": False,
         "explanationType": None,
-        "generator": GeneratorNetCifar10,
-        "discriminator": DiscriminatorNetCifar10,
+        "generator": GeneratorNet,
+        "discriminator": DiscriminatorNet,
         "dataset": "cifar",
         "batchSize": 128,
         "percentage": 0.5,
@@ -36,46 +36,14 @@ class ExperimentEnums(Enum):
         "glr": 0.0002,
         "dlr": 0.0002,
         "loss": nn.BCELoss(),
-        "epochs": 30
+        "epochs": 100
     }
 
-    CIFAR35Normal = {
+    MNIST5Normal = {
         "explainable": False,
         "explanationType": None,
-        "generator": GeneratorNetCifar10,
-        "discriminator": DiscriminatorNetCifar10,
-        "dataset": "cifar",
-        "batchSize": 128,
-        "percentage": 0.35,
-        "g_optim": optim.Adam,
-        "d_optim": optim.Adam,
-        "glr": 0.0002,
-        "dlr": 0.0002,
-        "loss": nn.BCELoss(),
-        "epochs": 30
-    }
-
-    CIFAR10Normal = {
-        "explainable": False,
-        "explanationType": None,
-        "generator": GeneratorNetCifar10,
-        "discriminator": DiscriminatorNetCifar10,
-        "dataset": "cifar",
-        "batchSize": 128,
-        "percentage": 0.1,
-        "g_optim": optim.Adam,
-        "d_optim": optim.Adam,
-        "glr": 0.0002,
-        "dlr": 0.0002,
-        "loss": nn.BCELoss(),
-        "epochs": 30
-    }
-
-    CIFAR5Normal = {
-        "explainable": False,
-        "explanationType": None,
-        "generator": GeneratorNetCifar10,
-        "discriminator": DiscriminatorNetCifar10,
+        "generator": GeneratorNet,
+        "discriminator": DiscriminatorNet,
         "dataset": "cifar",
         "batchSize": 128,
         "percentage": 0.05,
@@ -84,73 +52,218 @@ class ExperimentEnums(Enum):
         "glr": 0.0002,
         "dlr": 0.0002,
         "loss": nn.BCELoss(),
-        "epochs": 30
+        "epochs": 1000
     }
 
-    CIFAR20Lime = {
-        "explainable": True,
-        "explanationType": "lime",
-        "generator": GeneratorNetCifar10,
-        "discriminator": DiscriminatorNetCifar10,
-        "dataset": "cifar",
-        "batchSize": 128,
-        "percentage": 0.2,
-        "g_optim": optim.Adam,
-        "d_optim": optim.Adam,
-        "glr": 0.0002,
-        "dlr": 0.0002,
-        "loss": nn.BCELoss(),
-        "epochs": 30
-    }
+    # CIFAR100Normal = {
+    #     "explainable": False,
+    #     "explanationType": None,
+    #     "generator": GeneratorNetCifar10,
+    #     "discriminator": DiscriminatorNetCifar10,
+    #     "dataset": "cifar",
+    #     "batchSize": 128,
+    #     "percentage": 1,
+    #     "g_optim": optim.Adam,
+    #     "d_optim": optim.Adam,
+    #     "glr": 0.0002,
+    #     "dlr": 0.0002,
+    #     "loss": nn.BCELoss(),
+    #     "epochs": 30
+    # }
 
-    CIFAR20Shap = {
-        "explainable": True,
-        "explanationType": "shap",
-        "generator": GeneratorNetCifar10,
-        "discriminator": DiscriminatorNetCifar10,
-        "dataset": "cifar",
-        "batchSize": 128,
-        "percentage": 0.2,
-        "g_optim": optim.Adam,
-        "d_optim": optim.Adam,
-        "glr": 0.0002,
-        "dlr": 0.0002,
-        "loss": nn.BCELoss(),
-        "epochs": 30
-    }
+    # CIFAR100Normal = {
+    #     "explainable": False,
+    #     "explanationType": None,
+    #     "generator": GeneratorNetCifar10,
+    #     "discriminator": DiscriminatorNetCifar10,
+    #     "dataset": "cifar",
+    #     "batchSize": 128,
+    #     "percentage": 1,
+    #     "g_optim": optim.Adam,
+    #     "d_optim": optim.Adam,
+    #     "glr": 0.0002,
+    #     "dlr": 0.0002,
+    #     "loss": nn.BCELoss(),
+    #     "epochs": 30
+    # }
 
-    CIFAR20Perturb = {
-        "explainable": True,
-        "explanationType": "perturb",
-        "generator": GeneratorNetCifar10,
-        "discriminator": DiscriminatorNetCifar10,
-        "dataset": "cifar",
-        "batchSize": 128,
-        "percentage": 0.2,
-        "g_optim": optim.Adam,
-        "d_optim": optim.Adam,
-        "glr": 0.0002,
-        "dlr": 0.0002,
-        "loss": nn.BCELoss(),
-        "epochs": 30
-    }
+    # CIFAR100Normal = {
+    #     "explainable": False,
+    #     "explanationType": None,
+    #     "generator": GeneratorNetCifar10,
+    #     "discriminator": DiscriminatorNetCifar10,
+    #     "dataset": "cifar",
+    #     "batchSize": 128,
+    #     "percentage": 1,
+    #     "g_optim": optim.Adam,
+    #     "d_optim": optim.Adam,
+    #     "glr": 0.0002,
+    #     "dlr": 0.0002,
+    #     "loss": nn.BCELoss(),
+    #     "epochs": 30
+    # }
 
-    CIFAR20Saliency = {
-        "explainable": True,
-        "explanationType": "saliency",
-        "generator": GeneratorNetCifar10,
-        "discriminator": DiscriminatorNetCifar10,
-        "dataset": "cifar",
-        "batchSize": 128,
-        "percentage": 0.2,
-        "g_optim": optim.Adam,
-        "d_optim": optim.Adam,
-        "glr": 0.0002,
-        "dlr": 0.0002,
-        "loss": nn.BCELoss(),
-        "epochs": 30
-    }
+    # CIFAR100Normal = {
+    #     "explainable": False,
+    #     "explanationType": None,
+    #     "generator": GeneratorNetCifar10,
+    #     "discriminator": DiscriminatorNetCifar10,
+    #     "dataset": "cifar",
+    #     "batchSize": 128,
+    #     "percentage": 1,
+    #     "g_optim": optim.Adam,
+    #     "d_optim": optim.Adam,
+    #     "glr": 0.0002,
+    #     "dlr": 0.0002,
+    #     "loss": nn.BCELoss(),
+    #     "epochs": 30
+    # }
 
+
+    # CIFAR100Normal = {
+    #     "explainable": False,
+    #     "explanationType": None,
+    #     "generator": GeneratorNetCifar10,
+    #     "discriminator": DiscriminatorNetCifar10,
+    #     "dataset": "cifar",
+    #     "batchSize": 128,
+    #     "percentage": 1,
+    #     "g_optim": optim.Adam,
+    #     "d_optim": optim.Adam,
+    #     "glr": 0.0002,
+    #     "dlr": 0.0002,
+    #     "loss": nn.BCELoss(),
+    #     "epochs": 30
+    # }
+    #
+    # CIFAR50Normal = {
+    #     "explainable": False,
+    #     "explanationType": None,
+    #     "generator": GeneratorNetCifar10,
+    #     "discriminator": DiscriminatorNetCifar10,
+    #     "dataset": "cifar",
+    #     "batchSize": 128,
+    #     "percentage": 0.5,
+    #     "g_optim": optim.Adam,
+    #     "d_optim": optim.Adam,
+    #     "glr": 0.0002,
+    #     "dlr": 0.0002,
+    #     "loss": nn.BCELoss(),
+    #     "epochs": 30
+    # }
+    #
+    # CIFAR35Normal = {
+    #     "explainable": False,
+    #     "explanationType": None,
+    #     "generator": GeneratorNetCifar10,
+    #     "discriminator": DiscriminatorNetCifar10,
+    #     "dataset": "cifar",
+    #     "batchSize": 128,
+    #     "percentage": 0.35,
+    #     "g_optim": optim.Adam,
+    #     "d_optim": optim.Adam,
+    #     "glr": 0.0002,
+    #     "dlr": 0.0002,
+    #     "loss": nn.BCELoss(),
+    #     "epochs": 30
+    # }
+    #
+    # CIFAR10Normal = {
+    #     "explainable": False,
+    #     "explanationType": None,
+    #     "generator": GeneratorNetCifar10,
+    #     "discriminator": DiscriminatorNetCifar10,
+    #     "dataset": "cifar",
+    #     "batchSize": 128,
+    #     "percentage": 0.1,
+    #     "g_optim": optim.Adam,
+    #     "d_optim": optim.Adam,
+    #     "glr": 0.0002,
+    #     "dlr": 0.0002,
+    #     "loss": nn.BCELoss(),
+    #     "epochs": 30
+    # }
+    #
+    # CIFAR5Normal = {
+    #     "explainable": False,
+    #     "explanationType": None,
+    #     "generator": GeneratorNetCifar10,
+    #     "discriminator": DiscriminatorNetCifar10,
+    #     "dataset": "cifar",
+    #     "batchSize": 128,
+    #     "percentage": 0.05,
+    #     "g_optim": optim.Adam,
+    #     "d_optim": optim.Adam,
+    #     "glr": 0.0002,
+    #     "dlr": 0.0002,
+    #     "loss": nn.BCELoss(),
+    #     "epochs": 30
+    # }
+    #
+    # CIFAR20Lime = {
+    #     "explainable": True,
+    #     "explanationType": "lime",
+    #     "generator": GeneratorNetCifar10,
+    #     "discriminator": DiscriminatorNetCifar10,
+    #     "dataset": "cifar",
+    #     "batchSize": 128,
+    #     "percentage": 0.2,
+    #     "g_optim": optim.Adam,
+    #     "d_optim": optim.Adam,
+    #     "glr": 0.0002,
+    #     "dlr": 0.0002,
+    #     "loss": nn.BCELoss(),
+    #     "epochs": 30
+    # }
+    #
+    # CIFAR20Shap = {
+    #     "explainable": True,
+    #     "explanationType": "shap",
+    #     "generator": GeneratorNetCifar10,
+    #     "discriminator": DiscriminatorNetCifar10,
+    #     "dataset": "cifar",
+    #     "batchSize": 128,
+    #     "percentage": 0.2,
+    #     "g_optim": optim.Adam,
+    #     "d_optim": optim.Adam,
+    #     "glr": 0.0002,
+    #     "dlr": 0.0002,
+    #     "loss": nn.BCELoss(),
+    #     "epochs": 30
+    # }
+    #
+    # CIFAR20Perturb = {
+    #     "explainable": True,
+    #     "explanationType": "perturb",
+    #     "generator": GeneratorNetCifar10,
+    #     "discriminator": DiscriminatorNetCifar10,
+    #     "dataset": "cifar",
+    #     "batchSize": 128,
+    #     "percentage": 0.2,
+    #     "g_optim": optim.Adam,
+    #     "d_optim": optim.Adam,
+    #     "glr": 0.0002,
+    #     "dlr": 0.0002,
+    #     "loss": nn.BCELoss(),
+    #     "epochs": 30
+    # }
+    #
+    # CIFAR20Saliency = {
+    #     "explainable": True,
+    #     "explanationType": "saliency",
+    #     "generator": GeneratorNetCifar10,
+    #     "discriminator": DiscriminatorNetCifar10,
+    #     "dataset": "cifar",
+    #     "batchSize": 128,
+    #     "percentage": 0.2,
+    #     "g_optim": optim.Adam,
+    #     "d_optim": optim.Adam,
+    #     "glr": 0.0002,
+    #     "dlr": 0.0002,
+    #     "loss": nn.BCELoss(),
+    #     "epochs": 30
+    # }
+    #
     # DemoMNIST = {
     #     "explainable": True,
     #     "explanationType": "lime",

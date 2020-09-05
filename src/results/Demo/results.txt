@@ -1,3 +1,2 @@
-time taken: 32.2191
-fid score. mean: 114.576, std: 0.2115
-kid score. mean: 4.0823, std: 0.0425
+time taken: 8.3014
+fid score: 108.3191
