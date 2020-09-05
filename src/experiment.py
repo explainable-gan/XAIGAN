@@ -79,17 +79,15 @@ class Experiment:
                 N = real_batch.size(0)
 
                 # 1. Train Discriminator
-                real_data = Variable(images_to_vectors(real_batch))
-
                 # Generate fake data and detach (so gradients are not calculated for generator)
                 fake_data = self.generator(noise(N, self.cuda)).detach()
 
                 if self.cuda:
-                    real_data = real_data.cuda()
+                    real_batch = real_batch.cuda()
                     fake_data = fake_data.cuda()
 
                 # Train D
-                d_error, d_pred_real, d_pred_fake = self._train_discriminator(real_data=real_data, fake_data=fake_data)
+                d_error, d_pred_real, d_pred_fake = self._train_discriminator(real_data=real_batch, fake_data=fake_data)
 
                 # 2. Train Generator
                 # Generate fake data
@@ -109,8 +107,8 @@ class Experiment:
                 logger.log(d_error, g_error, epoch, n_batch, num_batches)
 
                 if n_batch % (num_batches // logging_frequency) == 0:
-                    # test_images = vectors_to_images(self.generator(test_noise)).cpu().data
-                    # logger.log_images(test_images, epoch, n_batch, num_batches)
+                    test_images = vectors_to_images(self.generator(test_noise)).cpu().data
+                    logger.log_images(test_images, epoch, n_batch, num_batches)
 
                     # Display status Logs
                     logger.display_status(

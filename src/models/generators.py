@@ -13,6 +13,7 @@ Authors:
 """
 
 from torch import nn, Tensor
+import numpy as np
 
 
 class GeneratorNet(nn.Module):
@@ -22,11 +23,11 @@ class GeneratorNet(nn.Module):
 
     def __init__(self):
         super(GeneratorNet, self).__init__()
-        n_features = 100
-        n_out = 1024
+        self.n_features = 100
+        self.n_out = (1, 32, 32)
 
         self.input_layer = nn.Sequential(
-            nn.Linear(n_features, 256),
+            nn.Linear(self.n_features, 256),
             nn.LeakyReLU(0.2)
         )
         self.hidden1 = nn.Sequential(
@@ -38,7 +39,7 @@ class GeneratorNet(nn.Module):
             nn.LeakyReLU(0.2)
         )
         self.out = nn.Sequential(
-            nn.Linear(1296, 1024),
+            nn.Linear(1296, int(np.prod(self.n_out))),
             nn.Tanh()
         )
 
@@ -48,34 +49,53 @@ class GeneratorNet(nn.Module):
         x = self.hidden1(x)
         x = self.hidden2(x)
         x = self.out(x)
+        x = x.view(x.size(0), *self.n_out)
         return x
 
 
-class GeneratorNetCIFAR10(nn.Module):
-    """
-    A three hidden-layer generative neural network
-    """
+class GeneratorNetCifar10(nn.Module):
 
     def __init__(self):
-        super(GeneratorNetCIFAR10, self).__init__()
-        self.main = nn.Sequential(
-            nn.ConvTranspose2d(100, 512, 4, 1, 0, bias=False),
-            nn.BatchNorm2d(512),
-            nn.ReLU(True),
-            nn.ConvTranspose2d(512, 256, 4, 2, 1, bias=False),
-            nn.BatchNorm2d(256),
-            nn.ReLU(True),
-            nn.ConvTranspose2d(256, 128, 4, 2, 1, bias=False),
-            nn.BatchNorm2d(128),
-            nn.ReLU(True),
-            nn.ConvTranspose2d(128, 64, 4, 2, 1, bias=False),
-            nn.BatchNorm2d(64),
-            nn.ReLU(True),
-            nn.ConvTranspose2d(64, 3, 4, 2, 1, bias=False),
+        super(GeneratorNetCifar10, self).__init__()
+        self.n_features = 100
+        self.n_out = (3, 32, 32)
+
+        self.input_layer = nn.Sequential(
+            nn.Linear(self.n_features, 128, bias=True),
+            nn.LeakyReLU(0.2, inplace=True),
+        )
+
+        self.hidden1 = nn.Sequential(
+            nn.Linear(128, 256, bias=True),
+            nn.LeakyReLU(0.2, inplace=True),
+        )
+
+        self.hidden2 = nn.Sequential(
+            nn.Linear(256, 512, bias=True),
+            nn.LeakyReLU(0.2, inplace=True),
+        )
+
+        self.hidden3 = nn.Sequential(
+            nn.Linear(512, 1024, bias=True),
+            nn.LeakyReLU(0.2, inplace=True),
+        )
+
+        self.hidden4 = nn.Sequential(
+            nn.Linear(1024, 2048, bias=True),
+            nn.LeakyReLU(0.2, inplace=True),
+        )
+
+        self.out = nn.Sequential(
+            nn.Linear(2048, int(np.prod(self.n_out))),
             nn.Tanh()
         )
 
-    def forward(self, x: Tensor) -> Tensor:
-        """ overrides the __call__ method of the generator """
-        x = self.main(x)
+    def forward(self, x):
+        x = self.input_layer(x)
+        x = self.hidden1(x)
+        x = self.hidden2(x)
+        x = self.hidden3(x)
+        x = self.hidden4(x)
+        x = self.out(x)
+        x = x.view(x.size(0), *self.n_out)
         return x

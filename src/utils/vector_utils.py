@@ -39,7 +39,7 @@ def vectors_to_images_numpy(vectors: np.array) -> np.array:
 
 def vectors_to_images(vectors):
     """ converts (Nx784) tensor to (Nx32x32) tensor """
-    return vectors.view(vectors.size(0), 1, 32, 32)
+    return vectors.view(vectors.size(0), 3, 32, 32)
 
 
 def noise(size: int, cuda: False) -> Variable:

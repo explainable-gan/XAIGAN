@@ -1,11 +1,43 @@
 from enum import Enum
-from models.generators import GeneratorNet
-from models.discriminators import DiscriminatorNet
+from models.generators import GeneratorNet, GeneratorNetCifar10
+from models.discriminators import DiscriminatorNet, DiscriminatorNetCifar10
 from torch import nn, optim
 from experiment import Experiment
 
 
 class ExperimentEnums(Enum):
+
+    CIFAR100Normal = {
+        "explainable": False,
+        "explanationType": None,
+        "generator": GeneratorNetCifar10,
+        "discriminator": DiscriminatorNetCifar10,
+        "dataset": "cifar",
+        "batchSize": 128,
+        "percentage": 1,
+        "g_optim": optim.Adam,
+        "d_optim": optim.Adam,
+        "glr": 0.0002,
+        "dlr": 0.0002,
+        "loss": nn.BCELoss(),
+        "epochs": 50
+    }
+
+    # MNIST100Normal = {
+    #     "explainable": False,
+    #     "explanationType": None,
+    #     "generator": GeneratorNet,
+    #     "discriminator": DiscriminatorNet,
+    #     "dataset": "mnist",
+    #     "batchSize": 128,
+    #     "percentage": 1,
+    #     "g_optim": optim.Adam,
+    #     "d_optim": optim.Adam,
+    #     "glr": 0.0002,
+    #     "dlr": 0.0002,
+    #     "loss": nn.BCELoss(),
+    #     "epochs": 50
+    # }
 
     # FMNIST50Normal = {
     #     "explainable": False,
@@ -39,21 +71,21 @@ class ExperimentEnums(Enum):
     #     "epochs": 50
     # }
 
-    FMNIST5Normal = {
-        "explainable": False,
-        "explanationType": None,
-        "generator": GeneratorNet,
-        "discriminator": DiscriminatorNet,
-        "dataset": "fmnist",
-        "batchSize": 100,
-        "percentage": 0.05,
-        "g_optim": optim.Adam,
-        "d_optim": optim.Adam,
-        "glr": 0.0002,
-        "dlr": 0.0002,
-        "loss": nn.BCELoss(),
-        "epochs": 50
-    }
+    # FMNIST5Normal = {
+    #     "explainable": False,
+    #     "explanationType": None,
+    #     "generator": GeneratorNet,
+    #     "discriminator": DiscriminatorNet,
+    #     "dataset": "fmnist",
+    #     "batchSize": 100,
+    #     "percentage": 0.05,
+    #     "g_optim": optim.Adam,
+    #     "d_optim": optim.Adam,
+    #     "glr": 0.0002,
+    #     "dlr": 0.0002,
+    #     "loss": nn.BCELoss(),
+    #     "epochs": 50
+    # }
 
     # MNIST100Lime = {
     #     "explainable": True,
