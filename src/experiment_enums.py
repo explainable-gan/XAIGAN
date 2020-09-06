@@ -7,20 +7,68 @@ from experiment import Experiment
 
 class ExperimentEnums(Enum):
 
-    CIFAR100Lime = {
-        "explainable": True,
-        "explanationType": "lime",
+    CIFAR20Normal = {
+        "explainable": False,
+        "explanationType": None,
         "generator": GeneratorNetCifar10,
         "discriminator": DiscriminatorNetCifar10,
         "dataset": "cifar",
         "batchSize": 128,
-        "percentage": 1,
+        "percentage": 0.2,
         "g_optim": optim.Adam,
         "d_optim": optim.Adam,
         "glr": 0.0002,
         "dlr": 0.0002,
         "loss": nn.BCELoss(),
-        "epochs": 300
+        "epochs": 30
+    }
+
+    CIFAR20Saliency = {
+        "explainable": True,
+        "explanationType": "saliency",
+        "generator": GeneratorNetCifar10,
+        "discriminator": DiscriminatorNetCifar10,
+        "dataset": "cifar",
+        "batchSize": 128,
+        "percentage": 0.2,
+        "g_optim": optim.Adam,
+        "d_optim": optim.Adam,
+        "glr": 0.0002,
+        "dlr": 0.0002,
+        "loss": nn.BCELoss(),
+        "epochs": 30
+    }
+
+    CIFAR20Shap = {
+        "explainable": True,
+        "explanationType": "shap",
+        "generator": GeneratorNetCifar10,
+        "discriminator": DiscriminatorNetCifar10,
+        "dataset": "cifar",
+        "batchSize": 128,
+        "percentage": 0.2,
+        "g_optim": optim.Adam,
+        "d_optim": optim.Adam,
+        "glr": 0.0002,
+        "dlr": 0.0002,
+        "loss": nn.BCELoss(),
+        "epochs": 30
+    }
+
+    CIFAR20Perturb = {
+        "explainable": True,
+        "explanationType": "perturb",
+        "generator": GeneratorNetCifar10,
+        "discriminator": DiscriminatorNetCifar10,
+        "dataset": "cifar",
+        "batchSize": 128,
+        "percentage": 0.2,
+        "g_optim": optim.Adam,
+        "d_optim": optim.Adam,
+        "glr": 0.0002,
+        "dlr": 0.0002,
+        "loss": nn.BCELoss(),
+        "epochs": 30
     }
 
     # CIFAR100Saliency = {
