@@ -106,8 +106,8 @@ class Experiment:
                     fake_data = fake_data.cuda()
 
                 # Train D
-                real_batch = DiffAugment(real_batch, policy=policy)
-                fake_data = DiffAugment(fake_data, policy=policy)
+                # real_batch = DiffAugment(real_batch, policy=policy)
+                # fake_data = DiffAugment(fake_data, policy=policy)
                 d_error, d_pred_real, d_pred_fake = self._train_discriminator(real_data=real_batch, fake_data=fake_data)
 
                 # 2. Train Generator
@@ -121,7 +121,7 @@ class Experiment:
                     fake_data = fake_data.cuda()
 
                 # Train G
-                fake_data = DiffAugment(fake_data, policy=policy)
+                # fake_data = DiffAugment(fake_data, policy=policy)
                 g_error = self._train_generator(fake_data=fake_data, local_explainable=local_explainable,
                                                 trained_data=trained_data)
 

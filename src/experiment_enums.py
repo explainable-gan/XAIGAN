@@ -7,55 +7,55 @@ from experiment import Experiment
 
 class ExperimentEnums(Enum):
 
-    CIFAR20NormalDiff = {
-        "explainable": False,
-        "explanationType": None,
-        "generator": GeneratorNetCifar10,
-        "discriminator": DiscriminatorNetCifar10,
-        "dataset": "cifar",
-        "batchSize": 128,
-        "percentage": 0.2,
-        "g_optim": optim.Adam,
-        "d_optim": optim.Adam,
-        "glr": 0.0002,
-        "dlr": 0.0002,
-        "loss": nn.BCELoss(),
-        "epochs": 30
-    }
+    # CIFAR20NormalDiff = {
+    #     "explainable": False,
+    #     "explanationType": None,
+    #     "generator": GeneratorNetCifar10,
+    #     "discriminator": DiscriminatorNetCifar10,
+    #     "dataset": "cifar",
+    #     "batchSize": 128,
+    #     "percentage": 0.2,
+    #     "g_optim": optim.Adam,
+    #     "d_optim": optim.Adam,
+    #     "glr": 0.0002,
+    #     "dlr": 0.0002,
+    #     "loss": nn.BCELoss(),
+    #     "epochs": 30
+    # }
+    #
+    # CIFAR20SaliencyDiff = {
+    #     "explainable": True,
+    #     "explanationType": "saliency",
+    #     "generator": GeneratorNetCifar10,
+    #     "discriminator": DiscriminatorNetCifar10,
+    #     "dataset": "cifar",
+    #     "batchSize": 128,
+    #     "percentage": 0.2,
+    #     "g_optim": optim.Adam,
+    #     "d_optim": optim.Adam,
+    #     "glr": 0.0002,
+    #     "dlr": 0.0002,
+    #     "loss": nn.BCELoss(),
+    #     "epochs": 30
+    # }
+    #
+    # CIFAR20ShapDiff = {
+    #     "explainable": True,
+    #     "explanationType": "shap",
+    #     "generator": GeneratorNetCifar10,
+    #     "discriminator": DiscriminatorNetCifar10,
+    #     "dataset": "cifar",
+    #     "batchSize": 128,
+    #     "percentage": 0.2,
+    #     "g_optim": optim.Adam,
+    #     "d_optim": optim.Adam,
+    #     "glr": 0.0002,
+    #     "dlr": 0.0002,
+    #     "loss": nn.BCELoss(),
+    #     "epochs": 30
+    # }
 
-    CIFAR20SaliencyDiff = {
-        "explainable": True,
-        "explanationType": "saliency",
-        "generator": GeneratorNetCifar10,
-        "discriminator": DiscriminatorNetCifar10,
-        "dataset": "cifar",
-        "batchSize": 128,
-        "percentage": 0.2,
-        "g_optim": optim.Adam,
-        "d_optim": optim.Adam,
-        "glr": 0.0002,
-        "dlr": 0.0002,
-        "loss": nn.BCELoss(),
-        "epochs": 30
-    }
-
-    CIFAR20ShapDiff = {
-        "explainable": True,
-        "explanationType": "shap",
-        "generator": GeneratorNetCifar10,
-        "discriminator": DiscriminatorNetCifar10,
-        "dataset": "cifar",
-        "batchSize": 128,
-        "percentage": 0.2,
-        "g_optim": optim.Adam,
-        "d_optim": optim.Adam,
-        "glr": 0.0002,
-        "dlr": 0.0002,
-        "loss": nn.BCELoss(),
-        "epochs": 30
-    }
-
-    CIFAR20PerturbDiff = {
+    CIFAR20Perturb = {
         "explainable": True,
         "explanationType": "perturb",
         "generator": GeneratorNetCifar10,
@@ -71,21 +71,21 @@ class ExperimentEnums(Enum):
         "epochs": 30
     }
 
-    CIFAR20LimeDiff = {
-        "explainable": True,
-        "explanationType": "lime",
-        "generator": GeneratorNetCifar10,
-        "discriminator": DiscriminatorNetCifar10,
-        "dataset": "cifar",
-        "batchSize": 128,
-        "percentage": 0.2,
-        "g_optim": optim.Adam,
-        "d_optim": optim.Adam,
-        "glr": 0.0002,
-        "dlr": 0.0002,
-        "loss": nn.BCELoss(),
-        "epochs": 30
-    }
+    # CIFAR20LimeDiff = {
+    #     "explainable": True,
+    #     "explanationType": "lime",
+    #     "generator": GeneratorNetCifar10,
+    #     "discriminator": DiscriminatorNetCifar10,
+    #     "dataset": "cifar",
+    #     "batchSize": 128,
+    #     "percentage": 0.2,
+    #     "g_optim": optim.Adam,
+    #     "d_optim": optim.Adam,
+    #     "glr": 0.0002,
+    #     "dlr": 0.0002,
+    #     "loss": nn.BCELoss(),
+    #     "epochs": 30
+    # }
 
     # CIFAR100Saliency = {
     #     "explainable": False,

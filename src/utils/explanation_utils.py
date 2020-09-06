@@ -24,7 +24,7 @@ def get_explanation(generated_data, discriminator, prediction, XAItype="shap", c
 
     data = generated_data[mask, :]
 
-    if len(indices) > 0:
+    if len(indices) > 1:
         if XAItype == "saliency":
             for i in range(len(indices)):
                 explainer = Saliency(discriminator)
