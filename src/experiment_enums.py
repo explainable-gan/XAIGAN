@@ -7,9 +7,9 @@ from experiment import Experiment
 
 class ExperimentEnums(Enum):
 
-    CIFAR100Normal = {
-        "explainable": False,
-        "explanationType": None,
+    CIFAR100Lime = {
+        "explainable": True,
+        "explanationType": "lime",
         "generator": GeneratorNetCifar10,
         "discriminator": DiscriminatorNetCifar10,
         "dataset": "cifar",
