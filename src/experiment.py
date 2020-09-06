@@ -14,6 +14,7 @@ Contact:
 from get_data import get_loader
 from utils.vector_utils import noise, values_target, images_to_vectors, vectors_to_images, vectors_to_images_cifar, \
     noise_cifar, weights_init
+from DiffAugment_pytorch import DiffAugment
 from evaluation.evaluate_generator import calculate_metrics
 from evaluation.evaluate_generator_cifar10 import calculate_metrics_cifar
 from logger import Logger
@@ -22,6 +23,8 @@ from torch.autograd import Variable
 from torch import nn
 import torch
 import time
+
+policy = 'translation'
 
 
 class Experiment:
@@ -103,6 +106,8 @@ class Experiment:
                     fake_data = fake_data.cuda()
 
                 # Train D
+                real_batch = DiffAugment(real_batch, policy=policy)
+                fake_data = DiffAugment(fake_data, policy=policy)
                 d_error, d_pred_real, d_pred_fake = self._train_discriminator(real_data=real_batch, fake_data=fake_data)
 
                 # 2. Train Generator
@@ -116,6 +121,7 @@ class Experiment:
                     fake_data = fake_data.cuda()
 
                 # Train G
+                fake_data = DiffAugment(fake_data, policy=policy)
                 g_error = self._train_generator(fake_data=fake_data, local_explainable=local_explainable,
                                                 trained_data=trained_data)
 
