@@ -7,22 +7,102 @@ from experiment import Experiment
 
 class ExperimentEnums(Enum):
 
-    # CIFAR20NormalDiff = {
-    #     "explainable": False,
-    #     "explanationType": None,
-    #     "generator": GeneratorNetCifar10,
-    #     "discriminator": DiscriminatorNetCifar10,
-    #     "dataset": "cifar",
-    #     "batchSize": 128,
-    #     "percentage": 0.2,
-    #     "g_optim": optim.Adam,
-    #     "d_optim": optim.Adam,
-    #     "glr": 0.0002,
-    #     "dlr": 0.0002,
-    #     "loss": nn.BCELoss(),
-    #     "epochs": 30
-    # }
-    #
+    MNIST35Shap = {
+        "explainable": True,
+        "explanationType": "shap",
+        "generator": GeneratorNet,
+        "discriminator": DiscriminatorNet,
+        "dataset": "mnist",
+        "batchSize": 128,
+        "percentage": 0.35,
+        "g_optim": optim.Adam,
+        "d_optim": optim.Adam,
+        "glr": 0.0002,
+        "dlr": 0.0002,
+        "loss": nn.BCELoss(),
+        "epochs": 50
+    }
+
+    MNIST35Lime = {
+        "explainable": True,
+        "explanationType": "lime",
+        "generator": GeneratorNet,
+        "discriminator": DiscriminatorNet,
+        "dataset": "mnist",
+        "batchSize": 128,
+        "percentage": 0.35,
+        "g_optim": optim.Adam,
+        "d_optim": optim.Adam,
+        "glr": 0.0002,
+        "dlr": 0.0002,
+        "loss": nn.BCELoss(),
+        "epochs": 50
+    }
+
+    MNIST35Saliency = {
+        "explainable": True,
+        "explanationType": "saliency",
+        "generator": GeneratorNet,
+        "discriminator": DiscriminatorNet,
+        "dataset": "mnist",
+        "batchSize": 128,
+        "percentage": 0.35,
+        "g_optim": optim.Adam,
+        "d_optim": optim.Adam,
+        "glr": 0.0002,
+        "dlr": 0.0002,
+        "loss": nn.BCELoss(),
+        "epochs": 50
+    }
+
+    FMNIST35Shap = {
+        "explainable": True,
+        "explanationType": "shap",
+        "generator": GeneratorNet,
+        "discriminator": DiscriminatorNet,
+        "dataset": "fmnist",
+        "batchSize": 128,
+        "percentage": 0.35,
+        "g_optim": optim.Adam,
+        "d_optim": optim.Adam,
+        "glr": 0.0002,
+        "dlr": 0.0002,
+        "loss": nn.BCELoss(),
+        "epochs": 50
+    }
+
+    FMNIST35Lime = {
+        "explainable": True,
+        "explanationType": "lime",
+        "generator": GeneratorNet,
+        "discriminator": DiscriminatorNet,
+        "dataset": "fmnist",
+        "batchSize": 128,
+        "percentage": 0.35,
+        "g_optim": optim.Adam,
+        "d_optim": optim.Adam,
+        "glr": 0.0002,
+        "dlr": 0.0002,
+        "loss": nn.BCELoss(),
+        "epochs": 50
+    }
+
+    FMNIST35Saliency = {
+        "explainable": True,
+        "explanationType": "saliency",
+        "generator": GeneratorNet,
+        "discriminator": DiscriminatorNet,
+        "dataset": "fmnist",
+        "batchSize": 128,
+        "percentage": 0.35,
+        "g_optim": optim.Adam,
+        "d_optim": optim.Adam,
+        "glr": 0.0002,
+        "dlr": 0.0002,
+        "loss": nn.BCELoss(),
+        "epochs": 50
+    }
+
     # CIFAR20SaliencyDiff = {
     #     "explainable": True,
     #     "explanationType": "saliency",
@@ -54,22 +134,6 @@ class ExperimentEnums(Enum):
     #     "loss": nn.BCELoss(),
     #     "epochs": 30
     # }
-
-    CIFAR20Perturb = {
-        "explainable": True,
-        "explanationType": "perturb",
-        "generator": GeneratorNetCifar10,
-        "discriminator": DiscriminatorNetCifar10,
-        "dataset": "cifar",
-        "batchSize": 128,
-        "percentage": 0.2,
-        "g_optim": optim.Adam,
-        "d_optim": optim.Adam,
-        "glr": 0.0002,
-        "dlr": 0.0002,
-        "loss": nn.BCELoss(),
-        "epochs": 30
-    }
 
     # CIFAR20LimeDiff = {
     #     "explainable": True,

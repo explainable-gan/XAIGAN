@@ -1,13 +1,4 @@
-"""
-This file logs experiment runs. Using code by Diego Gomez from: https://github.com/diegoalejogm/gans/
 
-Date:
-    November 6, 2019
-
-Project:
-    LogicGAN
-
-"""
 import torch
 import errno
 import os

@@ -40,12 +40,6 @@ def get_explanation(generated_data, discriminator, prediction, XAItype="shap", c
                 explainer = InputXGradient(discriminator)
                 temp[indices[i], :] = explainer.attribute(data[i, :].detach().unsqueeze(0))
 
-        elif XAItype == "perturb":
-            explainer = FeaturePermutation(discriminator)
-            result = explainer.attribute(data)
-            for i in range(len(indices)):
-                temp[indices[i], :] = result[i, :]
-
         elif XAItype == "lime":
             explainer = lime_image.LimeImageExplainer()
             global discriminatorLime
