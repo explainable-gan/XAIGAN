@@ -23,3 +23,4 @@ To run any of the GANs specified (with or without xAI):
 While the source code contains everything necessary to run the experiments, the code for evaluation is not ours. In order to evaluate (using FID scores), do the following:
 4. For CIFAR10, clone `https://github.com/bioinf-jku/TTUR/blob/master/fid_example.py` and pass the folder of the generated images.
 5. For MNIST or Fashion MNIST, clone `https://github.com/mseitzer/pytorch-fid` and pass the paths of numpy files generated.
+6. In order to run Differentiable Augmentation technique, copy the `https://github.com/mit-han-lab/data-efficient-gans/DiffAugment_pytorch.py` file and follow the instructions in `https://github.com/mit-han-lab/data-efficient-gans`.
