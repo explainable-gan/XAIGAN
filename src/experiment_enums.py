@@ -21,23 +21,23 @@ from experiment import Experiment
 
 class ExperimentEnums(Enum):
 
-    DemoCIFAR = {
+    FMNIST35Normal = {
         "explainable": False,
         "explanationType": None,
-        "generator": GeneratorNetCifar10,
-        "discriminator": DiscriminatorNetCifar10,
-        "dataset": "cifar",
+        "generator": GeneratorNet,
+        "discriminator": DiscriminatorNet,
+        "dataset": "fmnist",
         "batchSize": 128,
-        "percentage": 0.5,
+        "percentage": 1,
         "g_optim": optim.Adam,
         "d_optim": optim.Adam,
         "glr": 0.0002,
         "dlr": 0.0002,
         "loss": nn.BCELoss(),
-        "epochs": 5
+        "epochs": 50
     }
 
-    DemoMNIST = {
+    MNIST100Saliency = {
         "explainable": True,
         "explanationType": "saliency",
         "generator": GeneratorNet,
@@ -50,24 +50,136 @@ class ExperimentEnums(Enum):
         "glr": 0.0002,
         "dlr": 0.0002,
         "loss": nn.BCELoss(),
-        "epochs": 5
+        "epochs": 50
     }
 
-    DemoFMNIST = {
+    FMNIST100Saliency = {
+        "explainable": True,
+        "explanationType": "saliency",
+        "generator": GeneratorNet,
+        "discriminator": DiscriminatorNet,
+        "dataset": "fmnist",
+        "batchSize": 128,
+        "percentage": 1,
+        "g_optim": optim.Adam,
+        "d_optim": optim.Adam,
+        "glr": 0.0002,
+        "dlr": 0.0002,
+        "loss": nn.BCELoss(),
+        "epochs": 50
+    }
+
+    MNIST100Shap = {
+        "explainable": True,
+        "explanationType": "shap",
+        "generator": GeneratorNet,
+        "discriminator": DiscriminatorNet,
+        "dataset": "mnist",
+        "batchSize": 128,
+        "percentage": 1,
+        "g_optim": optim.Adam,
+        "d_optim": optim.Adam,
+        "glr": 0.0002,
+        "dlr": 0.0002,
+        "loss": nn.BCELoss(),
+        "epochs": 50
+    }
+
+    FMNIST100Shap = {
         "explainable": True,
         "explanationType": "shap",
         "generator": GeneratorNet,
         "discriminator": DiscriminatorNet,
         "dataset": "fmnist",
         "batchSize": 128,
-        "percentage": 0.35,
+        "percentage": 1,
         "g_optim": optim.Adam,
         "d_optim": optim.Adam,
         "glr": 0.0002,
         "dlr": 0.0002,
         "loss": nn.BCELoss(),
-        "epochs": 5
+        "epochs": 50
     }
+
+    MNIST100Lime = {
+        "explainable": True,
+        "explanationType": "lime",
+        "generator": GeneratorNet,
+        "discriminator": DiscriminatorNet,
+        "dataset": "mnist",
+        "batchSize": 128,
+        "percentage": 1,
+        "g_optim": optim.Adam,
+        "d_optim": optim.Adam,
+        "glr": 0.0002,
+        "dlr": 0.0002,
+        "loss": nn.BCELoss(),
+        "epochs": 50
+    }
+
+    FMNIST100Lime = {
+        "explainable": True,
+        "explanationType": "lime",
+        "generator": GeneratorNet,
+        "discriminator": DiscriminatorNet,
+        "dataset": "fmnist",
+        "batchSize": 128,
+        "percentage": 1,
+        "g_optim": optim.Adam,
+        "d_optim": optim.Adam,
+        "glr": 0.0002,
+        "dlr": 0.0002,
+        "loss": nn.BCELoss(),
+        "epochs": 50
+    }
+
+    # DemoCIFAR = {
+    #     "explainable": False,
+    #     "explanationType": None,
+    #     "generator": GeneratorNetCifar10,
+    #     "discriminator": DiscriminatorNetCifar10,
+    #     "dataset": "cifar",
+    #     "batchSize": 128,
+    #     "percentage": 0.5,
+    #     "g_optim": optim.Adam,
+    #     "d_optim": optim.Adam,
+    #     "glr": 0.0002,
+    #     "dlr": 0.0002,
+    #     "loss": nn.BCELoss(),
+    #     "epochs": 5
+    # }
+    #
+    # DemoMNIST = {
+    #     "explainable": True,
+    #     "explanationType": "saliency",
+    #     "generator": GeneratorNet,
+    #     "discriminator": DiscriminatorNet,
+    #     "dataset": "mnist",
+    #     "batchSize": 128,
+    #     "percentage": 1,
+    #     "g_optim": optim.Adam,
+    #     "d_optim": optim.Adam,
+    #     "glr": 0.0002,
+    #     "dlr": 0.0002,
+    #     "loss": nn.BCELoss(),
+    #     "epochs": 5
+    # }
+    #
+    # DemoFMNIST = {
+    #     "explainable": True,
+    #     "explanationType": "shap",
+    #     "generator": GeneratorNet,
+    #     "discriminator": DiscriminatorNet,
+    #     "dataset": "fmnist",
+    #     "batchSize": 128,
+    #     "percentage": 0.35,
+    #     "g_optim": optim.Adam,
+    #     "d_optim": optim.Adam,
+    #     "glr": 0.0002,
+    #     "dlr": 0.0002,
+    #     "loss": nn.BCELoss(),
+    #     "epochs": 5
+    # }
 
     def __str__(self):
         return self.value
