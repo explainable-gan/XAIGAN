@@ -1,2 +1,0 @@
-time taken: 0.7299
-fid score: 1
