@@ -1,5 +1,6 @@
 """
-This file is the main function that parses user argument and runs experiments.
+This file evaluates the generators trained on CIFAR10. Unfortunately, the evaluation code is not ours and so
+is not included here. In order to evaluate, use the generated folder of .jpgs at https://github.com/bioinf-jku/TTUR.
 
 Date:
     August 15, 2020
@@ -18,9 +19,6 @@ import numpy as np
 from models.generators import GeneratorNetCifar10
 import os
 from PIL import Image
-import glob
-import cv2 as cv
-import tensorflow as tf
 import sys
 sys.path.append("..")
 
@@ -41,32 +39,34 @@ def main():
 
 
 def calculate_metrics_cifar(path, numberOfSamples=2048):
-    from fid import fid
+    """
+    This function is supposed to calculate metrics for cifar.
+    :param path: path of the generator model
+    :type path: str
+    :param numberOfSamples: number of samples to generate
+    :type numberOfSamples: int
+    :return: None
+    :rtype: None
+    """
     folder = f'{os.getcwd()}/tmp'
     if not os.path.exists(folder):
         os.makedirs(folder)
     generate_samples_cifar(number=numberOfSamples, path_model=path, path_output=folder)
-
-    image_list = glob.glob(os.path.join(folder, '*.jpg'))
-    images = np.array([cv.imread(str(fn)).astype(np.float32) for fn in image_list])
-
-    stats_path = f"{os.getcwd()}/evaluation/metrics/cifar_fid_files/cifar10stats.npz"
-    f = np.load(stats_path)
-    mu_real, sigma_real = f['mu'][:], f['sigma'][:]
-
-    inception_folder = "./metrics/cifar_fid_files/"
-    inception_path = fid.check_or_download_inception(inception_folder)
-    fid.create_inception_graph(inception_path)
-    with tf.Session() as sess:
-        sess.run(tf.global_variables_initializer())
-        mu_gen, sigma_gen = fid.calculate_activation_statistics(images, sess, batch_size=100)
-
-    fid_value = fid.calculate_frechet_distance(mu_gen, sigma_gen, mu_real, sigma_real)
-    print(f'FID: {fid_value}')
-    return fid_value
+    return 0
 
 
 def generate_samples_cifar(number, path_model, path_output):
+    """
+    This function generates samples for the CIFAR GAN and saves them as jpg
+    :param number: number of samples to generate
+    :type number: int
+    :param path_model: path where the CIFAR generator is saved
+    :type path_model: str
+    :param path_output: path of the folder to save the images
+    :type path_output: str
+    :return: None
+    :rtype: None
+    """
     generator = GeneratorNetCifar10()
     generator.load_state_dict(torch.load(path_model, map_location=lambda storage, loc: storage))
     for i in range(number):

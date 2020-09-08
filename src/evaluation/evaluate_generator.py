@@ -1,5 +1,6 @@
 """
-This file is the main function that parses user argument and runs experiments.
+This file evaluates the generators trained on MNIST and Fashion MNIST. Unfortunately the evaluation code is not ours and
+so is not included here. In order to evaluate, use the saved numpy files at https://github.com/mseitzer/pytorch-fid
 
 Date:
     August 15, 2020
@@ -11,7 +12,6 @@ Contact:
     explainable.gan@gmail.com
 """
 
-from evaluation.metrics.fid_score import calculate_fid_given_paths
 from utils.vector_utils import noise
 import torch
 import argparse
@@ -37,20 +37,39 @@ def main():
 
 
 def calculate_metrics(path, numberOfSamples=10000, datasetType="mnist"):
+    """
+    This function calculates fid score for mnist and fashion mnist models.
+    :param path: the path of the saved generator model
+    :type path: str
+    :param numberOfSamples: the number of samples to generate
+    :type numberOfSamples: int
+    :param datasetType: the type of dataset (mnist or fmnist)
+    :type datasetType: str
+    :return: FID score of the generator
+    :rtype: int
+    """
+    # get real data
     path_real = "./real.npy"
     generate_real_data(number=numberOfSamples, path=path_real, datasetType=datasetType)
 
+    # get generated data
     path_generated = "./generated.npy"
     generate_samples(number=numberOfSamples, path_model=path, path_output=path_generated)
-
-    paths = [path_generated] + [path_real]
-
-    fid = calculate_fid_given_paths(paths)
-    print(f"FID Score. Mean: {fid[0][0]}, Std: {fid[0][1]}")
-    return fid[0][0]
+    return 0
 
 
 def generate_real_data(number: int, path: str, datasetType="mnist") -> None:
+    """
+    This function saves a batch of data from either MNIST or Fashion MNIST models
+    :param number:
+    :type number:
+    :param path:
+    :type path:
+    :param datasetType:
+    :type datasetType:
+    :return:
+    :rtype:
+    """
     # get background data and save
     loader = get_loader(number, 1, datasetType)
     batch = next(iter(loader))[0].detach()
@@ -59,6 +78,17 @@ def generate_real_data(number: int, path: str, datasetType="mnist") -> None:
 
 
 def generate_samples(number, path_model, path_output):
+    """
+    This function generates samples for MNIST and Fashion MNIST generators
+    :param number: the number of samples to generate
+    :type number: int
+    :param path_model: the path of the saved generator model
+    :type path_model: str
+    :param path_output: path of the folder to save generated samples
+    :type path_output: str
+    :return: None
+    :rtype: None
+    """
     generator = GeneratorNet()
     generator.load_state_dict(torch.load(path_model, map_location=lambda storage, loc: storage))
     samples = generator(noise(number, False)).detach()
