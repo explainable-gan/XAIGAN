@@ -1,15 +1,14 @@
 """
-This file contains the discriminator class
+This file contains the discriminator architectures.
 
 Date:
-    November 6, 2019
+    August 15, 2020
 
 Project:
-    LogicGAN
+    XAI-GAN
 
-Authors:
-    name: Vineel Nagisetty, Laura Graves, Joseph Scott, Vijay Ganesh
-    contact: vineel.nagisetty@uwaterloo.ca
+Contact:
+    explainable.gan@gmail.com
 """
 
 from abc import ABC
@@ -84,6 +83,7 @@ class DiscriminatorNetCifar10(nn.Module, ABC):
         )
 
     def forward(self, x):
+        """ overrides the __call__ method of the discriminator """
         x = self.input_layer(x)
         x = self.hidden1(x)
         x = self.hidden2(x)

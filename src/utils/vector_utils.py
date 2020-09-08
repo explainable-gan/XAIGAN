@@ -1,3 +1,15 @@
+"""
+This file contains the utility functions needed for GANs.
+
+Date:
+    August 15, 2020
+
+Project:
+    XAI-GAN
+
+Contact:
+    explainable.gan@gmail.com
+"""
 
 import numpy as np
 from torch import Tensor, from_numpy, randn, full
@@ -46,6 +58,7 @@ def noise(size: int, cuda: False) -> Variable:
 
 
 def noise_cifar(size: int, cuda: False) -> Variable:
+    """ generates a 1-d vector of normal sampled random values of mean 0 and standard deviation 1"""
     result = Variable(randn(size, 100, 1, 1))
     if cuda:
         result = result.cuda()
@@ -61,6 +74,7 @@ def values_target(size: tuple, value: float, cuda: False) -> Variable:
 
 
 def weights_init(m):
+    """ initialize convolutional and batch norm layers in generator and discriminator """
     classname = m.__class__.__name__
     if classname.find('Conv') != -1:
         nn.init.normal_(m.weight.data, 0.0, 0.02)

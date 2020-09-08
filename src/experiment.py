@@ -1,5 +1,5 @@
 """
-This file contains the experiment method which runs the experiments
+This file contains the experiment class which runs the experiments
 
 Date:
     August 15, 2020
@@ -12,9 +12,8 @@ Contact:
 """
 
 from get_data import get_loader
-from utils.vector_utils import noise, values_target, images_to_vectors, vectors_to_images, vectors_to_images_cifar, \
-    noise_cifar, weights_init
-from DiffAugment_pytorch import DiffAugment
+from utils.vector_utils import noise, values_target, vectors_to_images, vectors_to_images_cifar, noise_cifar, \
+    weights_init
 from evaluation.evaluate_generator import calculate_metrics
 from evaluation.evaluate_generator_cifar10 import calculate_metrics_cifar
 from logger import Logger
@@ -24,11 +23,15 @@ from torch import nn
 import torch
 import time
 
-policy = 'translation'
-
 
 class Experiment:
+    """ The class that contains the experiment details """
     def __init__(self, experimentType):
+        """
+        Standard init
+        :param experimentType: experiment enum that contains all the data needed to run the experiment
+        :type experimentType:
+        """
         self.name = experimentType.name
         self.type = experimentType.value
         self.explainable = self.type["explainable"]
@@ -42,22 +45,30 @@ class Experiment:
         self.cuda = True if torch.cuda.is_available() else False
         self.real_label = 0.9
         self.fake_label = 0.1
+        self.samples = 16
         torch.backends.cudnn.benchmark = True
 
     def run(self, logging_frequency=4) -> (list, list):
+        """
+        This function runs the experiment
+        :param logging_frequency: how frequently to log each epoch (default 4)
+        :type logging_frequency: int
+        :return: None
+        :rtype: None
+        """
 
         start_time = time.time()
 
-        explanationSwitch = (self.epochs+1)/2 if self.epochs % 2 == 1 else self.epochs/2
+        explanationSwitch = (self.epochs + 1) / 2 if self.epochs % 2 == 1 else self.epochs / 2
 
-        logger = Logger(self.name, samples=16)
+        logger = Logger(self.name, self.type["dataset"])
 
         if self.type["dataset"] == "cifar":
-            test_noise = noise_cifar(logger.samples, self.cuda)
+            test_noise = noise_cifar(self.samples, self.cuda)
             self.generator.apply(weights_init)
             self.discriminator.apply(weights_init)
         else:
-            test_noise = noise(logger.samples, self.cuda)
+            test_noise = noise(self.samples, self.cuda)
 
         loader = get_loader(self.type["batchSize"], self.type["percentage"], self.type["dataset"])
         num_batches = len(loader)
@@ -106,8 +117,6 @@ class Experiment:
                     fake_data = fake_data.cuda()
 
                 # Train D
-                # real_batch = DiffAugment(real_batch, policy=policy)
-                # fake_data = DiffAugment(fake_data, policy=policy)
                 d_error, d_pred_real, d_pred_fake = self._train_discriminator(real_data=real_batch, fake_data=fake_data)
 
                 # 2. Train Generator
@@ -121,7 +130,6 @@ class Experiment:
                     fake_data = fake_data.cuda()
 
                 # Train G
-                # fake_data = DiffAugment(fake_data, policy=policy)
                 g_error = self._train_generator(fake_data=fake_data, local_explainable=local_explainable,
                                                 trained_data=trained_data)
 
@@ -145,14 +153,14 @@ class Experiment:
 
         if self.type["dataset"] == "cifar":
             test_images = vectors_to_images_cifar(test_images).cpu().data
-            fid = calculate_metrics_cifar(path=f'{logger.data_subdir}/generator.pt', numberOfSamples=2048)
+            calculate_metrics_cifar(path=f'{logger.data_subdir}/generator.pt', numberOfSamples=10000)
         else:
             test_images = vectors_to_images(test_images).cpu().data
-            fid = calculate_metrics(path=f'{logger.data_subdir}/generator.pt', numberOfSamples=10000,
-                                    datasetType=self.type["dataset"])
+            calculate_metrics(path=f'{logger.data_subdir}/generator.pt', numberOfSamples=10000,
+                              datasetType=self.type["dataset"])
 
         logger.log_images(test_images, self.epochs + 1, 0, num_batches)
-        logger.save_scores(timeTaken, fid)
+        logger.save_scores(timeTaken, 0)
         return
 
     def _train_generator(self, fake_data: torch.Tensor, local_explainable, trained_data=None) -> torch.Tensor:
@@ -175,7 +183,7 @@ class Experiment:
                             data_type=self.type["dataset"])
 
         # Calculate error and back-propagate
-        error = self.loss(prediction, values_target(size=(N, ), value=self.real_label, cuda=self.cuda))
+        error = self.loss(prediction, values_target(size=(N,), value=self.real_label, cuda=self.cuda))
 
         error.backward()
 
@@ -191,12 +199,12 @@ class Experiment:
     def _train_discriminator(self, real_data: Variable, fake_data: torch.Tensor):
         """
         This function performs one iteration of training the discriminator
-        :param real_data:
-        :type real_data:
-        :param fake_data:
-        :type fake_data:
-        :return:
-        :rtype:
+        :param real_data: batch from dataset
+        :type real_data: torch.Tensor
+        :param fake_data: data from generator
+        :type fake_data: torch.Tensor
+        :return: tuple of (mean error, predictions on real data, predictions on generated data)
+        :rtype: (torch.Tensor, torch.Tensor, torch.Tensor)
         """
         N = real_data.size(0)
 
@@ -207,13 +215,13 @@ class Experiment:
         prediction_real = self.discriminator(real_data).view(-1)
 
         # Calculate error
-        error_real = self.loss(prediction_real, values_target(size=(N, ), value=self.real_label, cuda=self.cuda))
+        error_real = self.loss(prediction_real, values_target(size=(N,), value=self.real_label, cuda=self.cuda))
 
         # 1.2 Train on Fake Data
         prediction_fake = self.discriminator(fake_data).view(-1)
 
         # Calculate error
-        error_fake = self.loss(prediction_fake, values_target(size=(N, ), value=self.fake_label, cuda=self.cuda))
+        error_fake = self.loss(prediction_fake, values_target(size=(N,), value=self.fake_label, cuda=self.cuda))
 
         # Sum up error and backpropagate
         error = error_real + error_fake
@@ -223,4 +231,4 @@ class Experiment:
         self.d_optim.step()
 
         # Return error and predictions for real and fake inputs
-        return (error_real + error_fake)/2, prediction_real, prediction_fake
+        return (error_real + error_fake) / 2, prediction_real, prediction_fake

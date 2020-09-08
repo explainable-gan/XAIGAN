@@ -20,7 +20,7 @@ def main():
     The main function that parses arguments
     :return:
     """
-    parser = argparse.ArgumentParser(description="run explainable gan experiment using the provided experiment enums.")
+    parser = argparse.ArgumentParser(description="run xAI-GAN experiment using the provided experiment enums.")
     args = parser.parse_args()
     experiment_setup(args)
 

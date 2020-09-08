@@ -1,9 +1,21 @@
+"""
+This file contains the explainable AI utils needed for xAI-GAN to work
+
+Date:
+    August 15, 2020
+
+Project:
+    XAI-GAN
+
+Contact:
+    explainable.gan@gmail.com
+"""
 
 import numpy as np
 from copy import deepcopy
 import torch
 from torch.nn import functional as F
-from captum.attr import DeepLiftShap, Saliency, InputXGradient, FeaturePermutation
+from captum.attr import DeepLiftShap, Saliency
 from utils.vector_utils import values_target, images_to_vectors
 from lime import lime_image
 
@@ -14,6 +26,25 @@ global discriminatorLime
 
 def get_explanation(generated_data, discriminator, prediction, XAItype="shap", cuda=True, trained_data=None,
                     data_type="mnist") -> None:
+    """
+    This function calculates the explanation for given generated images using the desired xAI systems and the
+    :param generated_data: data created by the generator
+    :type generated_data: torch.Tensor
+    :param discriminator: the discriminator model
+    :type discriminator: torch.nn.Module
+    :param prediction: tensor of predictions by the discriminator on the generated data
+    :type prediction: torch.Tensor
+    :param XAItype: the type of xAI system to use. One of ("shap", "lime", "saliency")
+    :type XAItype: str
+    :param cuda: whether to use gpu
+    :type cuda: bool
+    :param trained_data: a batch from the dataset
+    :type trained_data: torch.Tensor
+    :param data_type: the type of the dataset used. One of ("cifar", "mnist", "fmnist")
+    :type data_type: str
+    :return:
+    :rtype:
+    """
 
     # initialize temp values to all 1s
     temp = values_target(size=generated_data.size(), value=1.0, cuda=cuda)
@@ -35,11 +66,6 @@ def get_explanation(generated_data, discriminator, prediction, XAItype="shap", c
                 explainer = DeepLiftShap(discriminator)
                 temp[indices[i], :] = explainer.attribute(data[i, :].detach().unsqueeze(0), trained_data, target=0)
 
-        elif XAItype == "input":
-            for i in range(len(indices)):
-                explainer = InputXGradient(discriminator)
-                temp[indices[i], :] = explainer.attribute(data[i, :].detach().unsqueeze(0))
-
         elif XAItype == "lime":
             explainer = lime_image.LimeImageExplainer()
             global discriminatorLime
@@ -57,6 +83,8 @@ def get_explanation(generated_data, discriminator, prediction, XAItype="shap", c
                 _, mask = exp.get_image_and_mask(exp.top_labels[0], positive_only=False, negative_only=False)
                 temp[indices[i], :] = torch.tensor(mask.astype(np.float))
             del discriminatorLime
+        else:
+            raise Exception("wrong xAI type given")
 
     if cuda:
         temp = temp.cuda()
@@ -74,7 +102,7 @@ def explanation_hook(module, grad_input, grad_output):
     # get stored mask
     temp = images_to_vectors(get_values())
 
-    # multiply with mask
+    # multiply with mask to generate values in range [1x, 1.2x] where x is the original calculated gradient
     new_grad = grad_input[0] + 0.2 * (grad_input[0] * temp)
 
     return (new_grad, )
@@ -118,6 +146,7 @@ def set_values(x: np.array) -> None:
 
 
 def batch_predict(images):
+    """ function to use in lime xAI system for MNIST and FashionMNIST"""
     # convert images to greyscale
     images = np.mean(images, axis=3)
     # stack up all images
@@ -128,12 +157,10 @@ def batch_predict(images):
 
 
 def batch_predict_cifar(images):
+    """ function to use in lime xAI system for CIFAR10"""
     # stack up all images
     images = np.transpose(images, (0, 3, 1, 2))
     batch = torch.stack([i for i in torch.Tensor(images)], dim=0)
     logits = discriminatorLime(batch)
     probs = F.softmax(logits, dim=1).view(-1).unsqueeze(1)
     return probs.detach().numpy()
-
-
-

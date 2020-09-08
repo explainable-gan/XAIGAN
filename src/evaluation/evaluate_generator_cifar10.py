@@ -19,8 +19,6 @@ import numpy as np
 from models.generators import GeneratorNetCifar10
 import os
 from PIL import Image
-import sys
-sys.path.append("..")
 
 
 def main():
@@ -52,7 +50,7 @@ def calculate_metrics_cifar(path, numberOfSamples=2048):
     if not os.path.exists(folder):
         os.makedirs(folder)
     generate_samples_cifar(number=numberOfSamples, path_model=path, path_output=folder)
-    return 0
+    return
 
 
 def generate_samples_cifar(number, path_model, path_output):

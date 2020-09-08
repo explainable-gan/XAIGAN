@@ -1,18 +1,17 @@
 """
-This file contains the generator class
+This file contains the generator architectures.
 
 Date:
-    November 6, 2019
+    August 15, 2020
 
 Project:
-    LogicGAN
+    XAI-GAN
 
-Authors:
-    name: Vineel Nagisetty, Laura Graves, Joseph Scott, Vijay Ganesh
-    contact: vineel.nagisetty@uwaterloo.ca
+Contact:
+    explainable.gan@gmail.com
 """
-from abc import ABC
 
+from abc import ABC
 from torch import nn, Tensor
 import numpy as np
 
@@ -85,6 +84,7 @@ class GeneratorNetCifar10(nn.Module, ABC):
         )
 
     def forward(self, x):
+        """ overrides the __call__ method of the generator """
         x = self.input_layer(x)
         x = self.hidden1(x)
         x = self.hidden2(x)

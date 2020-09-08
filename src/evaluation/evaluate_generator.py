@@ -45,8 +45,8 @@ def calculate_metrics(path, numberOfSamples=10000, datasetType="mnist"):
     :type numberOfSamples: int
     :param datasetType: the type of dataset (mnist or fmnist)
     :type datasetType: str
-    :return: FID score of the generator
-    :rtype: int
+    :return: None
+    :rtype: None
     """
     # get real data
     path_real = "./real.npy"
@@ -55,7 +55,7 @@ def calculate_metrics(path, numberOfSamples=10000, datasetType="mnist"):
     # get generated data
     path_generated = "./generated.npy"
     generate_samples(number=numberOfSamples, path_model=path, path_output=path_generated)
-    return 0
+    return
 
 
 def generate_real_data(number: int, path: str, datasetType="mnist") -> None:

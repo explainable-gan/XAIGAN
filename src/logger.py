@@ -1,3 +1,16 @@
+"""
+This file logs experiment runs. Using code by Diego Gomez from: https://github.com/diegoalejogm/gans/ with slight
+modifications
+
+Date:
+    August 15, 2020
+
+Project:
+    XAI-GAN
+
+Contact:
+    explainable.gan@gmail.com
+"""
 
 import torch
 import errno
@@ -12,19 +25,20 @@ class Logger:
     """
     Logs information during the experiment
     """
-    def __init__(self, experiment_name, samples):
+    def __init__(self, experiment_name, datasetName):
         """
-        :param experiment_name: str name of the model
-        :param data_name: str name of the dataset
-        :param samples: int number of samples to display
+        Standard init
+        :param experiment_name: name of the experiment enum
+        :type experiment_name: str
+        :param datasetName: name of the dataset
+        :type datasetName: str
         """
         self.model_name = experiment_name
-        self.samples = samples
-        self.data_subdir = f'./results/{experiment_name}'
+        self.data_subdir = f'./results/{datasetName}/{experiment_name}'
         Logger._make_dir(self.data_subdir)
 
         # TensorBoard
-        self.writer = SummaryWriter(comment=self.data_subdir)
+        self.writer = SummaryWriter(comment=self.data_subdir, write_to_disk=False)
 
     def log(self, d_error, g_error, epoch, n_batch, num_batches):
         if isinstance(d_error, torch.autograd.Variable):
@@ -47,14 +61,12 @@ class Logger:
         plt.legend()
         plt.savefig(self.data_subdir + "/plotLoss.png")
 
-    def log_images(self, images, epoch, n_batch, num_batches, format='NCHW', normalize=True):
-        '''
-        input images are expected in format (NCHW)
-        '''
+    def log_images(self, images, epoch, n_batch, num_batches, i_format='NCHW', normalize=True):
+        """ input images are expected in format (NCHW) """
         if type(images) == np.ndarray:
             images = torch.from_numpy(images)
 
-        if format == 'NHWC':
+        if i_format == 'NHWC':
             images = images.transpose(1, 3)
 
         step = Logger._step(epoch, n_batch, num_batches)
